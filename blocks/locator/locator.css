@@ -1,0 +1,533 @@
+@import url('./locator-tokens.css');
+
+/* ============================================================
+   Locator — split-panel branch / ATM / advisor finder.
+   Mobile-first: search + results stack above the map.
+   Desktop (>=900px): left control panel | right map panel.
+   ============================================================ */
+
+.locator {
+  display: flex;
+  flex-direction: column;
+  gap: var(--locator-gap);
+  font-family: var(--body-font-family);
+  color: var(--text-color);
+}
+
+/* ---------- panels ---------- */
+.locator .locator-panel-left {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-m);
+  min-width: 0;
+}
+
+/* ---------- search area ---------- */
+.locator .locator-search {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-s);
+}
+
+.locator .locator-search-field {
+  display: flex;
+}
+
+.locator .locator-search-by,
+.locator .locator-search-input {
+  width: 100%;
+  height: 48px;
+  border: var(--border-width-s) solid var(--border-color);
+  border-radius: var(--border-radius-s);
+  padding: 0 var(--spacing-s);
+  font-size: var(--body-font-size-s);
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.locator .locator-search-field-query {
+  position: relative;
+  gap: var(--spacing-xs);
+}
+
+.locator .locator-search-input {
+  flex: 1 1 auto;
+}
+
+.locator .locator-search-submit {
+  flex: 0 0 auto;
+  height: 48px;
+  margin: 0;
+  padding: 0 var(--spacing-m);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  border-radius: var(--border-radius-s);
+  white-space: nowrap;
+}
+
+.locator .locator-search-icon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentcolor;
+  border-radius: 50%;
+  position: relative;
+}
+
+.locator .locator-search-icon::after {
+  content: '';
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  width: 7px;
+  height: 2px;
+  background: currentcolor;
+  transform: rotate(45deg);
+}
+
+/* ---------- filters ---------- */
+.locator .locator-filters {
+  border: var(--border-width-s) solid var(--border-color);
+  border-radius: var(--border-radius-s);
+  overflow: hidden;
+}
+
+.locator .locator-filter-toggle {
+  width: 100%;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  padding: var(--spacing-s) var(--spacing-m);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-xs);
+  background-color: var(--light-color);
+  color: var(--text-color);
+  font-weight: 700;
+  font-size: var(--body-font-size-s);
+}
+
+.locator .locator-filter-toggle:hover {
+  background-color: var(--light-color);
+  color: var(--brand-primary);
+}
+
+.locator .locator-filter-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background-color: var(--border-color);
+  color: var(--text-secondary-color);
+  font-size: var(--body-font-size-xs);
+  font-weight: 700;
+}
+
+.locator .locator-filter-count.has-count {
+  background-color: var(--brand-primary);
+  color: #fff;
+}
+
+.locator .locator-filter-panel {
+  padding: var(--spacing-s) var(--spacing-m) var(--spacing-m);
+  border-top: var(--border-width-s) solid var(--border-color);
+}
+
+.locator .locator-filter-hint {
+  margin: 0 0 var(--spacing-s);
+  color: var(--text-secondary-color);
+  font-size: var(--body-font-size-xs);
+}
+
+.locator .locator-filter-group {
+  border-top: var(--border-width-s) solid var(--border-color);
+}
+
+.locator .locator-filter-group:first-of-type {
+  border-top: none;
+}
+
+.locator .locator-filter-group-toggle {
+  width: 100%;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  padding: var(--spacing-s) 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: none;
+  color: var(--text-color);
+  font-size: var(--body-font-size-s);
+  font-weight: 500;
+}
+
+.locator .locator-filter-group-toggle:hover {
+  background: none;
+  color: var(--brand-primary);
+}
+
+.locator .locator-filter-group-toggle::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border: 2px solid currentcolor;
+  border-width: 2px 2px 0 0;
+  transform: rotate(135deg);
+  transition: transform var(--transition-duration) var(--transition-easing);
+}
+
+.locator .locator-filter-group-toggle[aria-expanded='true']::after {
+  transform: rotate(-45deg);
+}
+
+.locator .locator-filter-options {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 var(--spacing-s);
+  display: none;
+}
+
+.locator .locator-filter-group-toggle[aria-expanded='true'] + .locator-filter-options {
+  display: block;
+}
+
+.locator .locator-filter-options[data-empty='true'] .locator-filter-placeholder {
+  color: var(--text-secondary-color);
+  padding: var(--spacing-xs) 0;
+}
+
+.locator .locator-filter-option label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) 0;
+  font-size: var(--body-font-size-s);
+  cursor: pointer;
+}
+
+/* ---------- results ---------- */
+.locator .locator-results-count {
+  margin: 0 0 var(--spacing-s);
+  font-size: var(--body-font-size-s);
+  color: var(--text-secondary-color);
+}
+
+.locator .locator-results-count-value {
+  color: var(--text-color);
+  font-weight: 700;
+}
+
+.locator .locator-results-scroll {
+  max-height: var(--locator-results-max-height);
+  overflow-y: auto;
+  border: var(--border-width-s) solid var(--border-color);
+  border-radius: var(--border-radius-s);
+}
+
+.locator .locator-results-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.locator .locator-card {
+  border-bottom: var(--border-width-s) solid var(--border-color);
+}
+
+.locator .locator-card:last-child {
+  border-bottom: none;
+}
+
+.locator .locator-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: var(--spacing-m);
+}
+
+.locator .locator-card-name {
+  margin: 0;
+  font-size: var(--body-font-size-l);
+  font-weight: 700;
+  color: var(--heading-color);
+}
+
+.locator .locator-card-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: var(--body-font-size-xs);
+  font-weight: 700;
+}
+
+.locator .locator-card-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--text-secondary-color);
+}
+
+.locator .locator-card-status[data-status='open'] {
+  color: var(--locator-status-open);
+}
+
+.locator .locator-card-status[data-status='open'] .locator-card-status-dot {
+  background-color: var(--locator-status-open);
+}
+
+.locator .locator-card-status[data-status='closed'] {
+  color: var(--locator-status-closed);
+}
+
+.locator .locator-card-status[data-status='closed'] .locator-card-status-dot {
+  background-color: var(--locator-status-closed);
+}
+
+.locator .locator-card-address,
+.locator .locator-card-hours {
+  margin: 0;
+  font-size: var(--body-font-size-s);
+  color: var(--text-secondary-color);
+}
+
+.locator .locator-card-cta {
+  align-self: flex-start;
+  margin-top: 4px;
+  font-size: var(--body-font-size-s);
+  font-weight: 700;
+  color: var(--brand-primary);
+  text-decoration: none;
+}
+
+.locator .locator-card-cta:hover {
+  text-decoration: underline;
+}
+
+/* results states */
+.locator .locator-results-empty,
+.locator .locator-results-error {
+  padding: var(--spacing-xl) var(--spacing-m);
+  text-align: center;
+  color: var(--text-secondary-color);
+  font-size: var(--body-font-size-s);
+}
+
+.locator .locator-results-error {
+  color: var(--brand-primary);
+}
+
+/* ---------- skeletons ---------- */
+.locator .locator-skeleton {
+  display: block;
+  height: 12px;
+  border-radius: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--locator-skeleton-base) 25%,
+    var(--locator-skeleton-shine) 37%,
+    var(--locator-skeleton-base) 63%
+  );
+  background-size: 400% 100%;
+  animation: locator-shimmer 1.4s ease infinite;
+}
+
+.locator .locator-skeleton-title {
+  width: 60%;
+  height: 18px;
+  margin-bottom: 6px;
+}
+
+.locator .locator-skeleton-line {
+  width: 100%;
+}
+
+.locator .locator-skeleton-line.short {
+  width: 45%;
+}
+
+.locator .locator-skeleton-cta {
+  width: 30%;
+  height: 14px;
+  margin-top: 4px;
+}
+
+@keyframes locator-shimmer {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
+/* ---------- map ---------- */
+.locator .locator-map {
+  position: relative;
+  width: 100%;
+}
+
+.locator .locator-map-canvas {
+  position: relative;
+  width: 100%;
+  min-height: var(--locator-map-min-height);
+  height: var(--locator-map-min-height);
+  border-radius: var(--locator-radius);
+  overflow: hidden;
+  background-color: var(--light-color);
+  background-image:
+    linear-gradient(var(--border-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+  background-size: 40px 40px;
+  border: var(--border-width-s) solid var(--border-color);
+}
+
+/* placeholder markers */
+.locator .locator-map-markers {
+  position: absolute;
+  inset: 0;
+}
+
+.locator .locator-map-marker {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50% 50% 50% 0;
+  background-color: var(--brand-primary);
+  transform: rotate(-45deg);
+  opacity: 0.35;
+  box-shadow: var(--box-shadow);
+}
+
+.locator .locator-map-marker::after {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--background-color);
+}
+
+.locator .locator-map-marker[data-active='true'] {
+  opacity: 1;
+}
+
+.locator .locator-map-marker:nth-child(1) {
+  top: 30%;
+  left: 28%;
+}
+
+.locator .locator-map-marker:nth-child(2) {
+  top: 52%;
+  left: 58%;
+}
+
+.locator .locator-map-marker:nth-child(3) {
+  top: 68%;
+  left: 38%;
+}
+
+/* map states — driven by data-map-state on the canvas */
+.locator .locator-map-loading,
+.locator .locator-map-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-s);
+  text-align: center;
+  padding: var(--spacing-m);
+  color: var(--text-secondary-color);
+  font-size: var(--body-font-size-s);
+  background-color: rgb(245 246 252 / 85%);
+}
+
+.locator .locator-map-canvas[data-map-state='loading'] .locator-map-markers,
+.locator .locator-map-canvas[data-map-state='empty'] .locator-map-markers {
+  opacity: 0.3;
+}
+
+.locator .locator-map-canvas[data-map-state='ready'] .locator-map-loading,
+.locator .locator-map-canvas[data-map-state='empty'] .locator-map-loading {
+  display: none;
+}
+
+.locator .locator-map-canvas:not([data-map-state='empty']) .locator-map-empty {
+  display: none;
+}
+
+.locator .locator-map-spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--brand-primary);
+  border-radius: 50%;
+  animation: locator-spin 0.8s linear infinite;
+}
+
+@keyframes locator-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================================
+   Tablet (>=600px)
+   ============================================================ */
+@media (width >= 600px) {
+  .locator .locator-search {
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .locator .locator-search-field {
+    flex: 0 0 auto;
+  }
+
+  .locator .locator-search-by {
+    width: 180px;
+  }
+
+  .locator .locator-search-field-query {
+    flex: 1 1 auto;
+  }
+
+  .locator .locator-map-canvas {
+    min-height: 420px;
+    height: 420px;
+  }
+}
+
+/* ============================================================
+   Desktop (>=900px) — split panel
+   ============================================================ */
+@media (width >= 900px) {
+  .locator {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .locator .locator-panel-left {
+    flex: 0 0 var(--locator-left-width);
+    max-width: var(--locator-left-width);
+  }
+
+  .locator .locator-panel-right {
+    flex: 1 1 auto;
+    position: sticky;
+    top: calc(var(--nav-height) + var(--spacing-m));
+  }
+
+  .locator .locator-results-scroll {
+    max-height: var(--locator-results-max-height);
+  }
+
+  .locator .locator-map-canvas {
+    min-height: var(--locator-map-desktop-height);
+    height: var(--locator-map-desktop-height);
+  }
+}

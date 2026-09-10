@@ -1,36 +1,23 @@
 /* stylelint-disable max-line-length */
-@font-face { /* @boilerplate */
-  font-family: roboto-condensed; /* @boilerplate */
-  font-style: normal; /* @boilerplate */
-  font-weight: 700; /* @boilerplate */
-  font-display: swap; /* @boilerplate */
-  src: url('../fonts/roboto-condensed-bold.woff2') format('woff2'); /* @boilerplate */
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; /* @boilerplate */
-}
 
-@font-face { /* @boilerplate */
-  font-family: roboto; /* @boilerplate */
-  font-style: normal; /* @boilerplate */
-  font-weight: 700; /* @boilerplate */
-  font-display: swap; /* @boilerplate */
-  src: url('../fonts/roboto-bold.woff2') format('woff2'); /* @boilerplate */
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; /* @boilerplate */
-}
-
-@font-face { /* @boilerplate */
-  font-family: roboto; /* @boilerplate */
-  font-style: normal; /* @boilerplate */
-  font-weight: 500; /* @boilerplate */
-  font-display: swap; /* @boilerplate */
-  src: url('../fonts/roboto-medium.woff2') format('woff2'); /* @boilerplate */
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; /* @boilerplate */
-}
-
-@font-face { /* @boilerplate */
-  font-family: roboto; /* @boilerplate */
-  font-style: normal; /* @boilerplate */
-  font-weight: 400; /* @boilerplate */
-  font-display: swap; /* @boilerplate */
-  src: url('../fonts/roboto-regular.woff2') format('woff2'); /* @boilerplate */
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; /* @boilerplate */
-}
+/*
+ * Fonts for: https://www.scotiabank.com/ca/en/personal.html
+ *
+ * Scotiabank's brand fonts are PROPRIETARY, licensed web fonts:
+ *   - Scotiabank-Headline  → headings (thin/medium display face)
+ *   - Scotiabank-Regular   → body text
+ *   - Scotiabank-Bold      → emphasis, links, buttons
+ *   - Scotiabank-Legal     → fine print
+ * The source site self-hosts them (eot/woff/ttf/svg) under a license that does
+ * not permit redistribution, so the font files are NOT shipped with this demo.
+ *
+ * Instead, styles/styles.css declares the family names in --body-font-family /
+ * --heading-font-family with system sans-serif fallbacks (Helvetica, Arial) and
+ * two size-adjusted `-fallback` @font-face entries to minimise CLS. If licensed
+ * Scotiabank font files become available, add their @font-face declarations here
+ * (font-display: swap) and link this file from head.html.
+ *
+ * The source site's fallback stacks were:
+ *   body:     Scotiabank-Regular, Frutiger-Roman, sans-serif
+ *   headings: Scotiabank-Headline, Helvetica, Arial, sans-serif
+ */

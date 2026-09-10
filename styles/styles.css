@@ -10,160 +10,178 @@
  * governing permissions and limitations under the License.
  */
 
-/*
- * Design tokens — two tiers:
- *   Tier 1 (this :root) = global semantic tokens; the surface a theme/customer overrides.
- *   Tier 2 = component tokens in blocks/{name}/{name}-tokens.css, which reference these.
- *
- * Migration marker — a trailing  @boilerplate  comment marks a line that is still untouched
- *   boilerplate, NOT yet reviewed against the customer. EVERY rule line across the boilerplate's
- *   CSS carries it (declarations and selector/at-rule opening lines alike). It is TRANSIENT
- *   scaffolding, not permanent metadata:
- *     - As the customer's styling is applied, each line is either rewritten or consciously kept,
- *       and EITHER WAY its marker is DELETED. Never "flip" it — just remove it.
- *     - When no markers remain, migration is complete and this is plain CSS again.
- *   A Claude Code hook (.claude/hooks/check-boilerplate-markers.mjs) flags any line you edit but
- *   leave marked — but only in a customer migration; it stays silent in the aemdemos/ise-boilerplate
- *   source repo, where keeping markers on edits is correct. Audit remaining work (anchored on the
- *   marker token, so prose is not counted):
- *     grep -rn  '/\* @boilerplate' styles/ blocks/   (every untouched line)
- *     grep -rc  '/\* @boilerplate' styles/ blocks/   (remaining count per file)
- */
-:root { /* @boilerplate */
-  /* colors */
-  --brand-primary: #666; /* @boilerplate */
-  --brand-secondary: #999; /* @boilerplate */
-  --background-color: white; /* @boilerplate */
-  --light-color: #f8f8f8; /* @boilerplate */
-  --dark-color: #505050; /* @boilerplate */
-  --text-color: #131313; /* @boilerplate */
-  --link-color: #3b63fb; /* @boilerplate */
-  --link-hover-color: #1d3ecf; /* @boilerplate */
-  --overlay-background-color: lightgrey; /* @boilerplate */
-  --error-color: firebrick; /* @boilerplate */
+/* === Design tokens extracted from: https://www.scotiabank.com/ca/en/personal.html === */
 
-  /* semantic color aliases — map intent onto the palette above (no marker: provenance follows the target) */
-  --color-surface: var(--background-color); /* @boilerplate */
-  --color-on-surface: var(--text-color); /* @boilerplate */
-  --color-action: var(--link-color); /* @boilerplate */
-  --color-action-hover: var(--link-hover-color); /* @boilerplate */
+/* === Extraction date: 2026-09-09 === */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  /* colors */
+  --brand-primary: #ed0722;
+  --brand-secondary: #ad0000;
+  --background-color: #fff;
+  --light-color: #f5f6fc;
+  --dark-color: #333;
+  --text-color: #333;
+  --text-secondary-color: #696969;
+  --heading-color: #2b2b2b;
+  --link-color: #333;
+  --link-hover-color: #333;
+  --overlay-background-color: #f5f6fc;
+  --error-color: #ed0722;
+
+  /* semantic color aliases — map intent onto the palette above */
+  --color-surface: var(--background-color);
+  --color-on-surface: var(--text-color);
+  --color-action: var(--brand-primary);
+  --color-action-hover: var(--brand-secondary);
 
   /* fonts */
-  --body-font-family: roboto, roboto-fallback, sans-serif; /* @boilerplate */
-  --heading-font-family: roboto-condensed, roboto-condensed-fallback, sans-serif; /* @boilerplate */
-  --fixed-font-family: 'Roboto Mono', menlo, consolas, monospace; /* @boilerplate */
+  --body-font-family: 'Scotiabank-Regular', scotiabank-regular-fallback, helvetica, arial, sans-serif;
+  --heading-font-family: 'Scotiabank-Headline', scotiabank-headline-fallback, helvetica, arial, sans-serif;
+  --fixed-font-family: menlo, consolas, 'Liberation Mono', monospace;
 
   /* body sizes */
-  --body-font-size-xl: 22px; /* @boilerplate */
-  --body-font-size-l: 20px; /* @boilerplate */
-  --body-font-size-m: 18px; /* @boilerplate */
-  --body-font-size-s: 16px; /* @boilerplate */
-  --body-font-size-xs: 14px; /* @boilerplate */
+  --body-font-size-xl: 20px;
+  --body-font-size-l: 18px;
+  --body-font-size-m: 16px;
+  --body-font-size-s: 14px;
+  --body-font-size-xs: 12px;
 
-  /* heading sizes */
-  --heading-font-size-xxl: 44px; /* @boilerplate */
-  --heading-font-size-xl: 40px; /* @boilerplate */
-  --heading-font-size-l: 36px; /* @boilerplate */
-  --heading-font-size-m: 32px; /* @boilerplate */
-  --heading-font-size-s: 28px; /* @boilerplate */
-  --heading-font-size-xs: 24px; /* @boilerplate */
+  /* heading sizes (mobile-first: these are mobile values) */
+  --heading-font-size-xxl: 40px;
+  --heading-font-size-xl: 35px;
+  --heading-font-size-l: 30px;
+  --heading-font-size-m: 24px;
+  --heading-font-size-s: 22px;
+  --heading-font-size-xs: 20px;
 
   /* line heights & weights */
-  --body-line-height: 1.6; /* @boilerplate */
-  --heading-line-height: 1.25; /* @boilerplate */
-  --heading-font-weight: 600; /* @boilerplate */
+  --body-line-height: 1.5;
+  --heading-line-height: 1.25;
+  --heading-font-weight: 400;
 
   /* space above/below text elements */
-  --element-margin-top: 0.8em; /* @boilerplate */
-  --element-margin-bottom: 0.5em; /* @boilerplate */
+  --element-margin-top: 0;
+  --element-margin-bottom: 16px;
 
   /* spacing scale */
-  --spacing-xxl: 30px; /* @boilerplate */
-  --spacing-xl: 24px; /* @boilerplate */
-  --spacing-l: 20px; /* @boilerplate */
-  --spacing-m: 16px; /* @boilerplate */
-  --spacing-s: 12px; /* @boilerplate */
-  --spacing-xs: 8px; /* @boilerplate */
+  --spacing-xxl: 60px;
+  --spacing-xl: 40px;
+  --spacing-l: 30px;
+  --spacing-m: 20px;
+  --spacing-s: 15px;
+  --spacing-xs: 8px;
 
   /* borders */
-  --border-width-s: 1px; /* @boilerplate */
-  --border-color: var(--light-color); /* @boilerplate */
-  --border-radius-s: 4px; /* @boilerplate */
-  --border-radius-m: 8px; /* @boilerplate */
+  --border-width-s: 1px;
+  --border-color: #e2e8ee;
+  --border-radius-s: 0.3rem;
+  --border-radius-m: 8px;
+  --border-radius: 0.3rem;
+
+  /* shadows */
+  --box-shadow: 0 2px 10px 0 rgb(0 0 0 / 10%);
 
   /* motion */
-  --transition-duration: 0.2s; /* @boilerplate */
+  --transition-duration: 0.3s;
+  --transition-easing: ease;
 
   /* focus ring */
-  --focus-ring-width: 2px; /* @boilerplate */
-  --focus-ring-offset: 2px; /* @boilerplate */
-  --focus-ring-color: var(--link-color); /* @boilerplate */
+  --focus-ring-width: 3px;
+  --focus-ring-offset: 0;
+  --focus-ring-color: rgb(237 7 34 / 25%);
 
   /* layout */
-  --max-width-site: 1200px; /* @boilerplate */
-  --icon-size: 24px; /* @boilerplate */
+  --max-width-site: 1140px;
+  --icon-size: 24px;
 
-  /* buttons (primary CTA = action color; secondary = outline) */
-  --button-margin: 12px 0; /* @boilerplate */
-  --button-padding: 0.5em 1.2em; /* @boilerplate */
-  --button-border-width: 2px; /* @boilerplate */
-  --button-border-radius: 2.4em; /* @boilerplate */
-  --button-font-weight: 500; /* @boilerplate */
-  --button-line-height: 1.25; /* @boilerplate */
-  --button-background: var(--color-action); /* @boilerplate */
-  --button-hover-background: var(--color-action-hover); /* @boilerplate */
-  --button-text-color: var(--background-color); /* @boilerplate */
-  --button-disabled-background: var(--light-color); /* @boilerplate */
+  /* buttons (primary CTA = brand red; secondary = red outline) */
+  --button-margin: 12px 0;
+  --button-padding: 0.75rem 1.3125rem;
+  --button-border-width: 1px;
+  --button-border-radius: 0.3rem;
+  --button-font-weight: 700;
+  --button-line-height: 1.25;
+  --button-background: var(--brand-primary);
+  --button-hover-background: var(--brand-secondary);
+  --button-text-color: #fff;
+  --button-disabled-background: var(--light-color);
 
   /* nav heights */
-  --nav-height: 64px; /* @boilerplate */
-  --breadcrumbs-height: 34px; /* @boilerplate */
-  --header-height: var(--nav-height); /* @boilerplate */
+  --nav-height: 152px;
+  --breadcrumbs-height: 34px;
+  --header-height: var(--nav-height);
 }
 
-/* fallback fonts */
-@font-face { /* @boilerplate */
-  font-family: roboto-condensed-fallback; /* @boilerplate */
-  size-adjust: 88.82%; /* @boilerplate */
-  src: local('Arial'); /* @boilerplate */
+/* fallback fonts — size-adjusted system fallbacks for the proprietary Scotiabank web fonts */
+@font-face {
+  font-family: scotiabank-headline-fallback;
+  size-adjust: 96%;
+  src: local('Helvetica'), local('Arial');
 }
 
-@font-face { /* @boilerplate */
-  font-family: roboto-fallback; /* @boilerplate */
-  size-adjust: 99.529%; /* @boilerplate */
-  src: local('Arial'); /* @boilerplate */
+@font-face {
+  font-family: scotiabank-regular-fallback;
+  size-adjust: 100%;
+  src: local('Helvetica'), local('Arial');
+}
+
+/* Responsive adjustments — desktop heading sizes */
+@media (width >= 900px) {
+  :root {
+    --heading-font-size-xxl: 46px;
+    --heading-font-size-xl: 36px;
+    --heading-font-size-l: 30px;
+    --heading-font-size-m: 24px;
+    --heading-font-size-s: 22px;
+    --heading-font-size-xs: 20px;
+  }
 }
 
 html {
   scroll-behavior: smooth;
 }
 
-body { /* @boilerplate */
-  display: none; /* @boilerplate */
-  margin: 0; /* @boilerplate */
-  background-color: var(--background-color); /* @boilerplate */
-  color: var(--text-color); /* @boilerplate */
-  font-family: var(--body-font-family); /* @boilerplate */
-  font-size: var(--body-font-size-s); /* @boilerplate */
-  line-height: var(--body-line-height); /* @boilerplate */
+body {
+  display: none;
+  margin: 0;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-m);
+  line-height: var(--body-line-height);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-body.appear { /* @boilerplate */
-  display: block; /* @boilerplate */
+body.appear {
+  display: block;
 }
 
-header { /* @boilerplate */
-  height: var(--header-height); /* @boilerplate */
+header {
+  height: var(--header-height);
 }
 
 header .header,
-footer .footer { /* @boilerplate */
-  visibility: hidden; /* @boilerplate */
+footer .footer {
+  visibility: hidden;
 }
 
 header .header[data-block-status="loaded"],
-footer .footer[data-block-status="loaded"] { /* @boilerplate */
-  visibility: visible; /* @boilerplate */
+footer .footer[data-block-status="loaded"] {
+  visibility: visible;
+}
+
+@media (width >= 900px) {
+  body[data-breadcrumbs] {
+    --header-height: calc(var(--nav-height) + var(--breadcrumbs-height));
+  }
 }
 
 h1,
@@ -171,87 +189,102 @@ h2,
 h3,
 h4,
 h5,
-h6 { /* @boilerplate */
-  margin-top: var(--element-margin-top); /* @boilerplate, keep consistent top margin so sections/blocks line up */
-  font-family: var(--heading-font-family); /* @boilerplate */
-  font-weight: var(--heading-font-weight); /* @boilerplate */
-  line-height: var(--heading-line-height); /* @boilerplate */
-  scroll-margin: var(--spacing-xl); /* @boilerplate */
+h6 {
+  margin-top: var(--element-margin-top);
+  margin-bottom: var(--spacing-xs);
+  font-family: var(--heading-font-family);
+  font-weight: var(--heading-font-weight);
+  line-height: var(--heading-line-height);
+  color: var(--heading-color);
+  scroll-margin: 40px;
 }
 
-h1 { font-size: var(--heading-font-size-xxl); } /* @boilerplate */
-h2 { font-size: var(--heading-font-size-xl); } /* @boilerplate */
-h3 { font-size: var(--heading-font-size-l); } /* @boilerplate */
-h4 { font-size: var(--heading-font-size-m); } /* @boilerplate */
-h5 { font-size: var(--heading-font-size-s); } /* @boilerplate */
-h6 { font-size: var(--heading-font-size-xs); } /* @boilerplate */
+/* Per-heading sizes plus overrides — h1 is heavier with tight leading,
+   h2 is the thin Scotiabank headline weight */
+h1 {
+  font-size: var(--heading-font-size-xxl);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -1px;
+}
+
+h2 {
+  font-size: var(--heading-font-size-xl);
+  font-weight: 300;
+}
+
+h3 { font-size: var(--heading-font-size-l); }
+h4 { font-size: var(--heading-font-size-m); }
+h5 { font-size: var(--heading-font-size-s); }
+h6 { font-size: var(--heading-font-size-xs); }
 
 p,
 dl,
 ol,
 ul,
 pre,
-blockquote { /* @boilerplate */
-  margin-top: var(--element-margin-top); /* @boilerplate */
-  margin-bottom: var(--element-margin-bottom); /* @boilerplate */
+blockquote {
+  margin-top: var(--element-margin-top);
+  margin-bottom: var(--element-margin-bottom);
 }
 
-ul ul, ol ol, ul ol, ol ul { /* let nested bullets maintain spacing */
- margin-top: unset; /* @boilerplate */
+ul ul, ol ol, ul ol, ol ul {
+  margin-top: unset;
 }
 
-li > p { /* fixes style when DA editor adds a P. https://adobedx.slack.com/archives/C08MJQ0Q3GA/p1783696133274169 */
-  margin-block: 0; /* @boilerplate */
+li > p {
+  margin-block: 0;
 }
 
 code,
-pre { /* @boilerplate */
-  font-family: var(--fixed-font-family); /* @boilerplate */
-  font-size: var(--body-font-size-s); /* @boilerplate */
+pre {
+  font-family: var(--fixed-font-family);
+  font-size: var(--body-font-size-s);
 }
 
-pre { /* @boilerplate */
-  padding: var(--spacing-s); /* @boilerplate */
-  border-radius: var(--border-radius-m); /* @boilerplate */
-  background-color: var(--light-color); /* @boilerplate */
-  overflow-x: auto; /* @boilerplate */
-  white-space: pre; /* @boilerplate */
+pre {
+  padding: var(--spacing-s);
+  border-radius: var(--border-radius-m);
+  background-color: var(--light-color);
+  overflow-x: auto;
+  white-space: pre;
 }
 
-main > div { /* @boilerplate */
-  margin: var(--spacing-xl) var(--spacing-s); /* @boilerplate */
+main > div {
+  margin: var(--spacing-xl) var(--spacing-s);
 }
 
 input,
 textarea,
 select,
-button { /* @boilerplate */
-  font: inherit; /* @boilerplate */
+button {
+  font: inherit;
 }
 
 /* links */
-a { /* @boilerplate */
-  color: var(--link-color); /* @boilerplate */
-  text-decoration: none; /* @boilerplate */
-  overflow-wrap: break-word; /* @boilerplate */
+a:any-link {
+  color: var(--link-color);
+  text-decoration: underline;
+  overflow-wrap: break-word;
+  transition: color var(--transition-duration, 0.3s) var(--transition-easing, ease);
 }
 
-a:hover { /* @boilerplate */
-  color: var(--link-hover-color); /* @boilerplate */
-  text-decoration: underline; /* @boilerplate */
+a:hover {
+  color: var(--link-hover-color);
+  text-decoration: none;
 }
 
 /*  ==== START color classes ==== */
 .brand-primary {
-  color: var(--brand-primary); /* @boilerplate */
+  color: var(--brand-primary);
 
-  --link-color: var(--brand-primary); /* @boilerplate */
+  --link-color: var(--brand-primary);
 }
 
 .brand-secondary {
-  color: var(--brand-secondary); /* @boilerplate */
+  color: var(--brand-secondary);
 
-  --link-color: var(--brand-secondary); /* @boilerplate */
+  --link-color: var(--brand-secondary);
 }
 
 /*  ==== END color classes ==== */
@@ -261,49 +294,49 @@ a:hover { /* @boilerplate */
 /* responsive visibility utilities (authorable via [hide-mobile] / [hide-desktop] bracket spans)
    that have overriding styles at desktop breakpoint */
 .hide-mobile {
-  display: none; /* @boilerplate */
+  display: none;
 }
 
 .center, .center-mobile {
-  text-align: center; /* @boilerplate */
+  text-align: center;
 
   &.columns .columns-img-col img {
-    display: inline-block; /* @boilerplate */
+    display: inline-block;
   }
 
   ol, ul {
-    width: fit-content; /* @boilerplate */
-    margin-left: auto; /* @boilerplate */
-    margin-right: auto; /* @boilerplate */
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   li {
-    text-align: left; /* @boilerplate */
+    text-align: left;
   }
 }
 
 .left, .left-mobile {
-  text-align: left; /* @boilerplate */
+  text-align: left;
 
   &.columns .columns-img-col img {
-    display: inline-block; /* @boilerplate */
+    display: inline-block;
   }
 }
 
 .right, .right-mobile {
-  text-align: right; /* @boilerplate */
+  text-align: right;
 
   &.columns .columns-img-col img {
-    display: inline-block; /* @boilerplate */
+    display: inline-block;
   }
 
   ol, ul {
-    width: fit-content; /* @boilerplate */
-    margin-left: auto; /* @boilerplate */
+    width: fit-content;
+    margin-left: auto;
   }
 
   li {
-    text-align: left; /* @boilerplate */
+    text-align: left;
   }
 }
 
@@ -311,48 +344,57 @@ a:hover { /* @boilerplate */
 
 
 /* buttons */
-a.button,
-button { /* @boilerplate */
-  box-sizing: border-box; /* @boilerplate */
-  display: inline-block; /* @boilerplate */
-  max-width: 100%; /* @boilerplate */
-  margin: var(--button-margin); /* @boilerplate */
-  border: var(--button-border-width) solid transparent; /* @boilerplate */
-  border-radius: var(--button-border-radius); /* @boilerplate */
-  padding: var(--button-padding); /* @boilerplate */
-  font-family: var(--body-font-family); /* @boilerplate */
-  font-style: normal; /* @boilerplate */
-  font-weight: var(--button-font-weight); /* @boilerplate */
-  line-height: var(--button-line-height); /* @boilerplate */
-  text-align: center; /* @boilerplate */
-  text-decoration: none; /* @boilerplate */
-  background-color: var(--button-background); /* @boilerplate */
-  color: var(--button-text-color); /* @boilerplate */
-  cursor: pointer; /* @boilerplate */
-  overflow: hidden; /* @boilerplate */
-  text-overflow: ellipsis; /* @boilerplate */
-  white-space: nowrap; /* @boilerplate */
+a.button:any-link,
+button {
+  box-sizing: border-box;
+  display: inline-block;
+  max-width: 100%;
+  margin: var(--button-margin);
+  border: var(--button-border-width) solid transparent;
+  border-radius: var(--button-border-radius);
+  padding: var(--button-padding);
+  font-family: var(--body-font-family);
+  font-style: normal;
+  font-weight: var(--button-font-weight);
+  line-height: var(--button-line-height);
+  text-align: center;
+  text-decoration: none;
+  background-color: var(--button-background);
+  color: var(--button-text-color);
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: background-color var(--transition-duration, 0.3s) var(--transition-easing, ease);
 }
 
 a.button:hover,
 a.button:focus,
 button:hover,
-button:focus { /* @boilerplate */
-  background-color: var(--button-hover-background); /* @boilerplate */
-  cursor: pointer; /* @boilerplate */
+button:focus {
+  background-color: var(--button-hover-background);
+  border-color: var(--button-hover-background);
+  cursor: pointer;
 }
 
 button:disabled,
-button:disabled:hover { /* @boilerplate */
-  background-color: var(--button-disabled-background); /* @boilerplate */
-  cursor: unset; /* @boilerplate */
+button:disabled:hover {
+  background-color: var(--button-disabled-background);
+  cursor: unset;
 }
 
 a.button.secondary,
-button.secondary { /* @boilerplate */
-  background-color: unset; /* @boilerplate */
-  border: var(--button-border-width) solid currentcolor; /* @boilerplate */
-  color: var(--text-color); /* @boilerplate */
+button.secondary {
+  background-color: unset;
+  border: var(--button-border-width) solid var(--brand-primary);
+  color: var(--brand-primary);
+}
+
+a.button.secondary:hover,
+button.secondary:hover {
+  background-color: var(--button-hover-background);
+  border-color: var(--button-hover-background);
+  color: #fff;
 }
 
 /* tooltip — authorable via [[tooltip]<a href="#" title="...">text</a>] bracket syntax */
@@ -402,157 +444,128 @@ button.secondary { /* @boilerplate */
   display: block;
 }
 
-main img { /* @boilerplate */
-  max-width: 100%; /* @boilerplate */
-  width: auto; /* @boilerplate */
-  height: auto; /* @boilerplate */
+main img {
+  max-width: 100%;
+  width: auto;
+  height: auto;
 }
 
-.icon { /* @boilerplate */
-  display: inline-block; /* @boilerplate */
-  height: var(--icon-size); /* @boilerplate */
-  width: var(--icon-size); /* @boilerplate */
+.icon {
+  display: inline-block;
+  height: var(--icon-size);
+  width: var(--icon-size);
 }
 
-.icon img { /* @boilerplate */
-  height: 100%; /* @boilerplate */
-  width: 100%; /* @boilerplate */
+.icon img {
+  height: 100%;
+  width: 100%;
 }
 
-/* sections */
-main > .section { /* @boilerplate */
-  padding: var(--spacing-xl) 0; /* @boilerplate */
-  margin: 0; /* @boilerplate */
+/* sections — full-bleed: sections span viewport, inner div constrains to 1140px */
+main > .section {
+  padding: var(--spacing-xl) 0;
+  margin: 0;
 }
 
-main > .section > div:not(.bg-image) { /* @boilerplate */
-  max-width: var(--max-width-site); /* @boilerplate */
-  margin: auto; /* @boilerplate */
-  padding: 0 var(--spacing-m); /* @boilerplate */
+main > .section > div:not(.bg-image) {
+  max-width: var(--max-width-site);
+  margin: auto;
+  padding: 0 var(--spacing-s);
 }
 
 /* Section metadata: background image sits behind content */
-main > .section.has-background { /* @boilerplate */
-  position: relative; /* @boilerplate */
-  overflow: hidden; /* @boilerplate */
+main > .section.has-background {
+  position: relative;
+  overflow: hidden;
 }
 
-main > .section.has-background > div:not(.bg-image) { /* @boilerplate */
-  position: relative; /* @boilerplate */
-  z-index: 1; /* @boilerplate */
+main > .section.has-background > div:not(.bg-image) {
+  position: relative;
+  z-index: 1;
 }
 
-main > .section.has-background > div.bg-image { /* @boilerplate */
-  position: absolute; /* @boilerplate */
-  inset: 0; /* @boilerplate */
-  z-index: 0; /* @boilerplate */
-  pointer-events: none; /* @boilerplate */
+main > .section.has-background > div.bg-image {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
 
-  picture,img { /* @boilerplate */
-  display: block; /* @boilerplate */
-  width: 100%; /* @boilerplate */
-  height: 100%; /* @boilerplate */
+  picture,img {
+    display: block;
+    width: 100%;
+    height: 100%;
   }
 
   img {
-    object-fit: cover; /* @boilerplate */
+    object-fit: cover;
   }
 }
 
-main > .section:first-of-type { /* @boilerplate */
-  margin-top: 0; /* @boilerplate */
+main > .section:first-of-type {
+  margin-top: 0;
 }
 
-@media (width >= 900px) { /* @boilerplate */
-  :root { /* @boilerplate */
-    /* body sizes increased by 2px */
-    --body-font-size-xl: 24px; /* @boilerplate */
-    --body-font-size-l: 22px; /* @boilerplate */
-    --body-font-size-m: 20px; /* @boilerplate */
-    --body-font-size-s: 18px; /* @boilerplate */
-    --body-font-size-xs: 16px; /* @boilerplate */
-  
-    /* heading sizes increased by 2px */
-    --heading-font-size-xxl: 46px; /* @boilerplate */
-    --heading-font-size-xl: 42px; /* @boilerplate */
-    --heading-font-size-l: 38px; /* @boilerplate */
-    --heading-font-size-m: 34px; /* @boilerplate */
-    --heading-font-size-s: 30px; /* @boilerplate */
-    --heading-font-size-xs: 26px; /* @boilerplate */
-
-    /* spacing scale increased by 4px */
-    --spacing-xxl: 34px; /* @boilerplate */
-    --spacing-xl: 28px; /* @boilerplate */
-    --spacing-l: 24px; /* @boilerplate */
-    --spacing-m: 20px; /* @boilerplate */
-    --spacing-s: 16px; /* @boilerplate */
-    --spacing-xs: 12px; /* @boilerplate */
-  }
-
-  body[data-breadcrumbs] { /* @boilerplate */
-    --header-height: calc(var(--nav-height) + var(--breadcrumbs-height)); /* @boilerplate */
-  }
-
+@media (width >= 900px) {
   /* ==== START alignment + display for desktop ==== */
   .hide-desktop {
-    display: none; /* @boilerplate */
+    display: none;
   }
 
   .hide-mobile {
-    display: revert; /* @boilerplate */
+    display: revert;
   }
 
   .center-mobile, .left-mobile, .right-mobile {
-    text-align: revert; /* @boilerplate */
+    text-align: revert;
 
     ol, ul {
-    margin-left: revert; /* @boilerplate */
-    margin-right: revert; /* @boilerplate */
+    margin-left: revert;
+    margin-right: revert;
     }
 
     li {
-      text-align: revert; /* @boilerplate */
+      text-align: revert;
     }
   }
 
   .center-desktop {
-    text-align: center; /* @boilerplate */
-  
-    &.columns .columns-img-col img {
-      display: inline-block; /* @boilerplate */
-    }
-  
-    ol, ul {
-      width: fit-content; /* @boilerplate */
-      margin-left: auto; /* @boilerplate */
-      margin-right: auto; /* @boilerplate */
-    }
-  
-    li {
-      text-align: left; /* @boilerplate */
-    }
-  }
-  
-  .left-desktop {
-    text-align: left; /* @boilerplate */
-  
-    &.columns .columns-img-col img {
-      display: inline-block; /* @boilerplate */
-    }
-  }
-  
-  .right-desktop {
-    text-align: right;
-  
+    text-align: center;
+
     &.columns .columns-img-col img {
       display: inline-block;
     }
-  
+
+    ol, ul {
+      width: fit-content;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    li {
+      text-align: left;
+    }
+  }
+
+  .left-desktop {
+    text-align: left;
+
+    &.columns .columns-img-col img {
+      display: inline-block;
+    }
+  }
+
+  .right-desktop {
+    text-align: right;
+
+    &.columns .columns-img-col img {
+      display: inline-block;
+    }
+
     ol, ul {
       width: fit-content;
       margin-left: auto;
     }
-  
+
     li {
       text-align: left;
     }
@@ -563,48 +576,59 @@ main > .section:first-of-type { /* @boilerplate */
   /* ==== Start widths. See /docs/span-tags.md and /docs/cell-class.md for usage ==== */
 
   div[class^="width-"], div[class*=" width-"] {
-    margin: var(--div-width-margin); /* @boilerplate */
+    margin: var(--div-width-margin);
   }
-  
+
   .width-75 {
-    width: 73.5%; /* @boilerplate */
+    width: 73.5%;
   }
-  
+
   .width-66 {
-    width: 64.5%; /* @boilerplate */
+    width: 64.5%;
   }
-  
+
   .width-50 {
-    width: 48.5%; /* @boilerplate */
+    width: 48.5%;
   }
-  
+
   .width-33 {
-    width: 31.5%; /* @boilerplate */
+    width: 31.5%;
   }
-  
+
   .width-25 {
-    width: 23.5%; /* @boilerplate */
+    width: 23.5%;
   }
-  
+
   .columns > div:has(> div[class^="width-"],> div[class*=" width-"]) {
-    align-items: var(--div-width-align-items); /* @boilerplate */
-  
+    align-items: var(--div-width-align-items);
+
     > div[class^="width-"],> div[class*=" width-"] {
-      flex: none; /* @boilerplate */
+      flex: none;
     }
   }
-  
-  /* ==== End width classes ==== */
 
-  main > .section > div:not(.bg-image) { /* @boilerplate */
-    padding: 0 var(--spacing-l); /* @boilerplate */
-  }
+  /* ==== End width classes ==== */
+}
+
+/* focus styles — brand-red focus ring */
+:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 var(--focus-ring-width) var(--focus-ring-color);
 }
 
 /* section metadata */
 main .section.light,
-main .section.highlight { /* @boilerplate */
-  background-color: var(--light-color); /* @boilerplate */
-  margin: 0; /* @boilerplate */
-  padding: var(--spacing-xl) 0; /* @boilerplate */
+main .section.highlight {
+  background-color: var(--light-color);
+  margin: 0;
+  padding: var(--spacing-xl) 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
