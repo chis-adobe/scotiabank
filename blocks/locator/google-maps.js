@@ -64,6 +64,27 @@ export function createMap(maps, container, options) {
     clickableIcons: false,
   });
 
+  // A map created while its container has zero size renders blank (grey) and
+  // never recovers on its own — no error is thrown. This is the most common
+  // "empty map" cause when a block is lazy-decorated before layout settles.
+  // Watch the container: whenever it gains/changes size, nudge Maps to relayout
+  // and re-apply the current view so the tiles paint.
+  if (typeof ResizeObserver !== 'undefined') {
+    let lastW = 0;
+    let lastH = 0;
+    const ro = new ResizeObserver(() => {
+      const { clientWidth: w, clientHeight: h } = container;
+      if (w > 0 && h > 0 && (w !== lastW || h !== lastH)) {
+        lastW = w;
+        lastH = h;
+        const center = map.getCenter();
+        maps.event.trigger(map, 'resize');
+        if (center) map.setCenter(center);
+      }
+    });
+    ro.observe(container);
+  }
+
   let markers = [];
   let infoWindow = null;
 
