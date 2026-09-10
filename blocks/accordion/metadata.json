@@ -1,0 +1,17 @@
+{
+  "name": "Accordion",
+  "baseBlock": "accordion",
+  "version": "1.0.0",
+  "description": "Expandable label / body pairs; each item toggles open on click.",
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "comfortable",
+    "purpose": "faq",
+    "imagePattern": "noimg"
+  },
+  "contentPattern": {
+    "structure": "title-body-expandable",
+    "buttonCount": 0,
+    "imageCount": 0
+  }
+}

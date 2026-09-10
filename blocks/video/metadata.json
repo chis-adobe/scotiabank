@@ -1,0 +1,17 @@
+{
+  "name": "Video",
+  "baseBlock": "video",
+  "version": "1.0.0",
+  "description": "Plays a video referenced by a link (YouTube, Vimeo, or direct video file).",
+  "visualCharacteristics": {
+    "colorScheme": "dark",
+    "density": "comfortable",
+    "purpose": "media",
+    "imagePattern": "noimg"
+  },
+  "contentPattern": {
+    "structure": "url-video",
+    "buttonCount": 0,
+    "imageCount": 0
+  }
+}

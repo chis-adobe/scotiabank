@@ -1,0 +1,17 @@
+{
+  "name": "Card",
+  "baseBlock": "card",
+  "version": "1.0.0",
+  "description": "A single card with an image and a body of title, description, and a link.",
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "comfortable",
+    "purpose": "content",
+    "imagePattern": "image-top"
+  },
+  "contentPattern": {
+    "structure": "image-title-body-cta",
+    "buttonCount": 1,
+    "imageCount": 1
+  }
+}

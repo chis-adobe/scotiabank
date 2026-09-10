@@ -1,0 +1,17 @@
+{
+  "name": "Hero",
+  "baseBlock": "hero",
+  "version": "1.0.0",
+  "description": "Full-width hero with a background image and an overlaid heading.",
+  "visualCharacteristics": {
+    "colorScheme": "dark",
+    "density": "spacious",
+    "purpose": "hero",
+    "imagePattern": "background"
+  },
+  "contentPattern": {
+    "structure": "image-heading",
+    "buttonCount": 0,
+    "imageCount": 1
+  }
+}

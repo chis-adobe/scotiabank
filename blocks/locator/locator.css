@@ -410,6 +410,17 @@
   color: var(--text-secondary-color);
 }
 
+.locator .locator-map-unavailable-detail {
+  margin: 0;
+  max-width: 32ch;
+  font-size: var(--body-font-size-xs);
+  color: var(--text-secondary-color);
+}
+
+.locator .locator-map-unavailable-detail:empty {
+  display: none;
+}
+
 .locator .locator-map-pin-icon {
   width: 28px;
   height: 28px;

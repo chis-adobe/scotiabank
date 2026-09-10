@@ -1,0 +1,17 @@
+{
+  "name": "Locator",
+  "baseBlock": "locator",
+  "version": "1.0.0",
+  "description": "Branch / ATM / advisor finder with search and map, powered by AEM GraphQL.",
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "comfortable",
+    "purpose": "finder",
+    "imagePattern": "noimg"
+  },
+  "contentPattern": {
+    "structure": "key-value-config",
+    "buttonCount": 1,
+    "imageCount": 0
+  }
+}

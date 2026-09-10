@@ -299,7 +299,8 @@ function buildMapArea(config) {
     el('span', { class: 'locator-map-spinner', 'aria-hidden': 'true' }), el('span', { text: 'Loading map…' }));
   const unavailable = el('div', { class: 'locator-map-unavailable', hidden: '' },
     el('span', { class: 'locator-map-pin-icon', 'aria-hidden': 'true' }),
-    el('p', { text: config.mapUnavailableText }));
+    el('p', { text: config.mapUnavailableText }),
+    el('p', { class: 'locator-map-unavailable-detail' }));
   const shell = el('div', {
     class: 'locator-map', 'data-map-state': 'loading',
   }, canvas, loading, unavailable);
@@ -414,7 +415,23 @@ export default async function decorate(block) {
   block.append(leftPanel, rightPanel);
 
   // Initialise the Google Map (graceful fallback when no key / load failure).
+  // The unavailable panel surfaces the real reason so failures are debuggable
+  // (missing key, blocked script, rejected key, or a runtime error).
   let mapController = null;
+  const showMapUnavailable = (reason) => {
+    mapLoading.hidden = true;
+    mapUnavailable.hidden = false;
+    mapShell.setAttribute('data-map-state', 'unavailable');
+    const detail = mapUnavailable.querySelector('.locator-map-unavailable-detail');
+    if (detail && reason) detail.textContent = reason;
+    // eslint-disable-next-line no-console
+    console.warn('[locator] Google Maps unavailable —', reason);
+  };
+
+  // Google calls this global on key/referrer/billing rejection — which renders
+  // a grey map rather than throwing, so catch it explicitly.
+  window.gm_authFailure = () => showMapUnavailable('Google Maps rejected the API key (check key validity, billing, and HTTP-referrer restrictions).');
+
   try {
     const maps = await loadGoogleMaps(config.apiKey);
     mapController = createMap(maps, mapCanvas, {
@@ -423,11 +440,11 @@ export default async function decorate(block) {
     mapLoading.hidden = true;
     mapShell.setAttribute('data-map-state', 'ready');
   } catch (err) {
-    mapLoading.hidden = true;
-    mapUnavailable.hidden = false;
-    mapShell.setAttribute('data-map-state', 'unavailable');
-    // eslint-disable-next-line no-console
-    console.warn('[locator] Google Maps unavailable —', err.message);
+    const reasons = {
+      'missing-api-key': 'No Google Maps API key configured (set page metadata "locator-maps-key").',
+      'google-maps-load-failed': 'The Google Maps script failed to load — often an ad blocker, privacy extension, or network blocking maps.googleapis.com.',
+    };
+    showMapUnavailable(reasons[err.message] || `Map failed to initialise: ${err.message}`);
   }
 
   const api = createLocatorApi(block, {

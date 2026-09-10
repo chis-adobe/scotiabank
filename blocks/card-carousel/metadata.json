@@ -1,0 +1,17 @@
+{
+  "name": "Card Carousel",
+  "baseBlock": "card-carousel",
+  "version": "1.0.0",
+  "description": "Horizontally sliding carousel of cards, each with an image, title, description, and link.",
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "comfortable",
+    "purpose": "promo",
+    "imagePattern": "image-top"
+  },
+  "contentPattern": {
+    "structure": "image-title-body-cta-repeating",
+    "buttonCount": 1,
+    "imageCount": 1
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "Tabs",
+  "baseBlock": "tabs",
+  "version": "1.0.0",
+  "description": "Tabbed panels: each item has a tab label and a panel body; clicking a tab reveals its panel.",
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "comfortable",
+    "purpose": "navigation",
+    "imagePattern": "noimg"
+  },
+  "contentPattern": {
+    "structure": "tabbed-panels",
+    "buttonCount": 0,
+    "imageCount": 0
+  }
+}

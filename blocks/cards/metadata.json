@@ -1,0 +1,17 @@
+{
+  "name": "Cards",
+  "baseBlock": "cards",
+  "version": "1.0.0",
+  "description": "A responsive grid of cards, each with an image, title, description, and link.",
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "comfortable",
+    "purpose": "content",
+    "imagePattern": "image-top"
+  },
+  "contentPattern": {
+    "structure": "image-title-body-cta-repeating",
+    "buttonCount": 1,
+    "imageCount": 1
+  }
+}

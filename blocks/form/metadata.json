@@ -1,0 +1,17 @@
+{
+  "name": "Form",
+  "baseBlock": "form",
+  "version": "1.0.0",
+  "description": "Renders a form from a form-definition JSON link and posts submissions to a submit endpoint.",
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "comfortable",
+    "purpose": "conversion",
+    "imagePattern": "noimg"
+  },
+  "contentPattern": {
+    "structure": "form-definition-links",
+    "buttonCount": 1,
+    "imageCount": 0
+  }
+}

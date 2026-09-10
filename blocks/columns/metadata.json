@@ -1,0 +1,17 @@
+{
+  "name": "Columns",
+  "baseBlock": "columns",
+  "version": "1.0.0",
+  "description": "A multi-column layout that places text and images side by side and stacks on mobile.",
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "comfortable",
+    "purpose": "layout",
+    "imagePattern": "image-split"
+  },
+  "contentPattern": {
+    "structure": "side-by-side-columns",
+    "buttonCount": 0,
+    "imageCount": 1
+  }
+}

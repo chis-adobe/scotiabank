@@ -1,0 +1,17 @@
+{
+  "name": "Widget",
+  "baseBlock": "widget",
+  "version": "1.0.0",
+  "description": "Mounts a self-contained UI widget (its own HTML, CSS, and JS) referenced by a single link.",
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "comfortable",
+    "purpose": "component",
+    "imagePattern": "noimg"
+  },
+  "contentPattern": {
+    "structure": "widget-link",
+    "buttonCount": 0,
+    "imageCount": 0
+  }
+}

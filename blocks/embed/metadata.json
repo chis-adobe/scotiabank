@@ -1,0 +1,17 @@
+{
+  "name": "Embed",
+  "baseBlock": "embed",
+  "version": "1.0.0",
+  "description": "Embeds external content such as YouTube, Vimeo, or social posts from a single URL.",
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "comfortable",
+    "purpose": "media",
+    "imagePattern": "noimg"
+  },
+  "contentPattern": {
+    "structure": "url-embed",
+    "buttonCount": 0,
+    "imageCount": 0
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "Section Title",
+  "baseBlock": "section-title",
+  "version": "1.0.0",
+  "description": "A semantic section heading with an optional subtitle, configurable size, alignment, and color.",
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "comfortable",
+    "purpose": "heading",
+    "imagePattern": "noimg"
+  },
+  "contentPattern": {
+    "structure": "title-subtitle",
+    "buttonCount": 0,
+    "imageCount": 0
+  }
+}

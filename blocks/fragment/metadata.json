@@ -1,0 +1,17 @@
+{
+  "name": "Fragment",
+  "baseBlock": "fragment",
+  "version": "1.0.0",
+  "description": "Includes the content of another document inline via a fragment path link.",
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "comfortable",
+    "purpose": "content-reuse",
+    "imagePattern": "noimg"
+  },
+  "contentPattern": {
+    "structure": "path-link",
+    "buttonCount": 0,
+    "imageCount": 0
+  }
+}

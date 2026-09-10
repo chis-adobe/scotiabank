@@ -1,0 +1,17 @@
+{
+  "name": "Carousel",
+  "baseBlock": "carousel",
+  "version": "1.0.0",
+  "description": "A full-width slider of slides, each with an image and text content, with previous / next controls.",
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "spacious",
+    "purpose": "hero",
+    "imagePattern": "image-split"
+  },
+  "contentPattern": {
+    "structure": "image-content-repeating",
+    "buttonCount": 1,
+    "imageCount": 1
+  }
+}

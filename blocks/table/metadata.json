@@ -1,0 +1,17 @@
+{
+  "name": "Table",
+  "baseBlock": "table",
+  "version": "1.0.0",
+  "description": "A data table built from rows and cells, with an optional header row.",
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "compact",
+    "purpose": "data",
+    "imagePattern": "noimg"
+  },
+  "contentPattern": {
+    "structure": "rows-cells",
+    "buttonCount": 0,
+    "imageCount": 0
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "Quote",
+  "baseBlock": "quote",
+  "version": "1.0.0",
+  "description": "A blockquote with a quotation and an optional attribution / citation.",
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "comfortable",
+    "purpose": "testimonial",
+    "imagePattern": "noimg"
+  },
+  "contentPattern": {
+    "structure": "quotation-attribution",
+    "buttonCount": 0,
+    "imageCount": 0
+  }
+}

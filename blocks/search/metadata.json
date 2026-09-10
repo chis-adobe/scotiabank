@@ -1,0 +1,17 @@
+{
+  "name": "Search",
+  "baseBlock": "search",
+  "version": "1.0.0",
+  "description": "A search box that queries a content index link and renders matching results.",
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "comfortable",
+    "purpose": "search",
+    "imagePattern": "noimg"
+  },
+  "contentPattern": {
+    "structure": "index-link",
+    "buttonCount": 0,
+    "imageCount": 0
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "Modal",
+  "baseBlock": "modal",
+  "version": "1.0.0",
+  "description": "Overlay dialog content shown in a modal, typically opened from a link to a /modals/ path.",
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "comfortable",
+    "purpose": "overlay",
+    "imagePattern": "optional"
+  },
+  "contentPattern": {
+    "structure": "heading-body-cta",
+    "buttonCount": 1,
+    "imageCount": 0
+  }
+}
