@@ -397,6 +397,19 @@
   to { transform: rotate(360deg); }
 }
 
+.locator .locator-infowindow {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-s);
+  color: var(--text-color);
+}
+
+.locator .locator-infowindow-address {
+  color: var(--text-secondary-color);
+}
+
 .locator .locator-map-pin-icon {
   width: 28px;
   height: 28px;
