@@ -91,9 +91,11 @@ function computeStatus(hours) {
   }
   const nowMinutes = (now.getHours() * 60) + now.getMinutes();
   const isOpen = nowMinutes >= open && nowMinutes < close;
+  const closeLabel = hours[`${day}Close`];
+  const openLabel = hours[`${day}Open`];
   return isOpen
-    ? { status: `Open now · until ${hours[`${day}Close`]}`, statusType: 'open' }
-    : { status: `Closed · opens ${hours[`${day}Open`]}`, statusType: 'closed' };
+    ? { status: `Open now · until ${closeLabel}`, statusType: 'open' }
+    : { status: `Closed · opens ${openLabel}`, statusType: 'closed' };
 }
 
 /** Builds a compact weekday hours summary string from an hours object. */
@@ -187,7 +189,6 @@ function el(tag, attrs = {}, ...children) {
   Object.entries(attrs).forEach(([k, v]) => {
     if (k === 'class') node.className = v;
     else if (k === 'text') node.textContent = v;
-    else if (k === 'html') node.innerHTML = v;
     else if (v !== null && v !== undefined) node.setAttribute(k, v);
   });
   children.flat().forEach((c) => c && node.append(c));
@@ -343,7 +344,8 @@ function createLocatorApi(block, refs, config, mapController) {
 
     /**
      * Plot markers on the real Google Map (when available). Points carry
-     * lat/lng and an optional info-window content string.
+     * lat/lng and an info-window content NODE (built via textContent, so
+     * branch data can never inject markup).
      */
     setMarkers(records = []) {
       const points = records
@@ -352,7 +354,9 @@ function createLocatorApi(block, refs, config, mapController) {
           lat: r.lat,
           lng: r.lng,
           title: r.name,
-          content: `<strong>${r.name}</strong><br>${r.address || ''}`,
+          content: el('div', { class: 'locator-infowindow' },
+            el('strong', { text: r.name || '' }),
+            r.address ? el('span', { class: 'locator-infowindow-address', text: r.address }) : null),
         }));
       if (mapController) {
         mapController.setMarkers(points);
