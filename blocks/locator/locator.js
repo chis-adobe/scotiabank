@@ -53,8 +53,13 @@ const DEFAULT_CONFIG = {
   mapZoom: 4,
   mapId: '',
   apiKey: '',
-  // AEM GraphQL persisted query. Global query → returns all branches for now.
+  // AEM GraphQL persisted queries.
+  //  - endpoint: global query → returns ALL branches (used when the search box
+  //    is empty, or the query isn't a recognised postal code).
+  //  - postalEndpoint: filtered query → the normalised postal code is appended
+  //    (…;postal=<CODE>). Exact, case-sensitive, no-space match server-side.
   endpoint: 'https://publish-p130746-e1275972.adobeaemcloud.com/graphql/execute.json/Scotia/BranchesList',
+  postalEndpoint: 'https://publish-p130746-e1275972.adobeaemcloud.com/graphql/execute.json/Scotia/BranchByPostal;postal=',
 };
 
 /* ============================================================
@@ -133,13 +138,27 @@ function mapBranchToRecord(item) {
   };
 }
 
+/** Canadian postal code, with or without the internal space (e.g. "V6A 1X5"). */
+const POSTAL_RE = /^[ABCEGHJ-NPRSTVXY]\d[A-Z]\s?\d[A-Z]\d$/i;
+
 /**
- * Runs the global GraphQL query and returns mapped branch records.
- * @param {string} endpoint persisted-query URL
+ * Normalises a postal code to the server's stored form: uppercase, no spaces
+ * (the BranchByPostal query is an exact, case-sensitive, space-sensitive match).
+ * @param {string} value raw user input
+ * @returns {string|null} normalised code, or null if not a valid postal code
+ */
+function normalisePostalCode(value) {
+  const cleaned = (value || '').replace(/\s+/g, '').toUpperCase();
+  return POSTAL_RE.test(cleaned) ? cleaned : null;
+}
+
+/**
+ * Runs a GraphQL persisted query and returns mapped branch records.
+ * @param {string} url fully-formed persisted-query URL (incl. any ;postal=… suffix)
  * @returns {Promise<Array<object>>}
  */
-async function fetchBranches(endpoint) {
-  const resp = await fetch(endpoint, { headers: { Accept: 'application/json' } });
+async function fetchBranches(url) {
+  const resp = await fetch(url, { headers: { Accept: 'application/json' } });
   if (!resp.ok) throw new Error(`GraphQL request failed: ${resp.status}`);
   const json = await resp.json();
   const items = json?.data?.branchList?.items || [];
@@ -460,17 +479,28 @@ export default async function decorate(block) {
   block.locator = api;
 
   /**
-   * Runs a search. For now every search runs the global BranchesList query
-   * (returns all branches); filtered queries will be selected here later.
+   * Chooses the GraphQL query for a search:
+   *  - a recognised postal code → BranchByPostal, with the normalised code
+   *    appended (…;postal=<CODE>, URL-encoded);
+   *  - anything else (incl. empty) → the global BranchesList (all branches).
+   * @param {{query:string}} detail
+   * @returns {{ url:string, postal:(string|null) }}
    */
+  const resolveQuery = ({ query }) => {
+    const postal = normalisePostalCode(query);
+    if (postal) return { url: `${config.postalEndpoint}${encodeURIComponent(postal)}`, postal };
+    return { url: config.endpoint, postal: null };
+  };
+
   const runSearch = async (detail) => {
     api.setLoading(true);
-    block.dispatchEvent(new CustomEvent('locator:search', { detail, bubbles: true }));
+    const { url, postal } = resolveQuery(detail);
+    block.dispatchEvent(new CustomEvent('locator:search', { detail: { ...detail, postal }, bubbles: true }));
     try {
-      const records = await fetchBranches(config.endpoint);
+      const records = await fetchBranches(url);
       api.setResults(records);
       api.setMarkers(records);
-      block.dispatchEvent(new CustomEvent('locator:results', { detail: { records }, bubbles: true }));
+      block.dispatchEvent(new CustomEvent('locator:results', { detail: { records, postal }, bubbles: true }));
     } catch (err) {
       api.setError();
       // eslint-disable-next-line no-console
