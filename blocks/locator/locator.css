@@ -1,20 +1,19 @@
 @import url('./locator-tokens.css');
 
 /* ============================================================
-   Locator — split-panel branch / ATM / advisor finder.
-   Mobile-first: search + results stack above the map.
-   Desktop (>=900px): left control panel | right map panel.
+   Locator — Scotiabank branch / ATM / advisor finder.
+   Mobile-first: search panel stacks above the map.
+   Desktop (>=900px): left search panel | right Google Map.
    ============================================================ */
 
 .locator {
   display: flex;
   flex-direction: column;
-  gap: var(--locator-gap);
+  gap: var(--spacing-l);
   font-family: var(--body-font-family);
   color: var(--text-color);
 }
 
-/* ---------- panels ---------- */
 .locator .locator-panel-left {
   display: flex;
   flex-direction: column;
@@ -22,21 +21,38 @@
   min-width: 0;
 }
 
-/* ---------- search area ---------- */
+/* ---------- intro ---------- */
+.locator .locator-heading {
+  margin: 0;
+  font-size: var(--heading-font-size-xl);
+  font-weight: 500;
+  color: var(--heading-color);
+}
+
+.locator .locator-lede {
+  margin: 0;
+  font-size: var(--body-font-size-s);
+  color: var(--text-secondary-color);
+}
+
+/* ---------- search ---------- */
 .locator .locator-search {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-s);
 }
 
-.locator .locator-search-field {
-  display: flex;
+.locator .locator-field-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: var(--body-font-size-xs);
+  font-weight: 700;
+  color: var(--text-color);
 }
 
-.locator .locator-search-by,
-.locator .locator-search-input {
+.locator .locator-search-by {
   width: 100%;
-  height: 48px;
+  height: var(--locator-field-height);
   border: var(--border-width-s) solid var(--border-color);
   border-radius: var(--border-radius-s);
   padding: 0 var(--spacing-s);
@@ -45,32 +61,58 @@
   color: var(--text-color);
 }
 
-.locator .locator-search-field-query {
-  position: relative;
-  gap: var(--spacing-xs);
+.locator .locator-search-input-wrap {
+  display: flex;
+  align-items: stretch;
+  border: var(--border-width-s) solid var(--border-color);
+  border-radius: var(--border-radius-s);
+  overflow: hidden;
 }
 
 .locator .locator-search-input {
   flex: 1 1 auto;
+  min-width: 0;
+  height: var(--locator-field-height);
+  border: none;
+  padding: 0 var(--spacing-s);
+  font-size: var(--body-font-size-s);
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.locator .locator-search-input:focus-visible {
+  outline: none;
+}
+
+.locator .locator-search-input-wrap:focus-within {
+  box-shadow: 0 0 0 var(--focus-ring-width) var(--focus-ring-color);
 }
 
 .locator .locator-search-submit {
   flex: 0 0 auto;
-  height: 48px;
+  width: var(--locator-field-height);
+  height: var(--locator-field-height);
   margin: 0;
-  padding: 0 var(--spacing-m);
+  padding: 0;
+  border: none;
+  border-radius: 0;
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-xs);
-  border-radius: var(--border-radius-s);
-  white-space: nowrap;
+  justify-content: center;
+  background-color: var(--brand-primary);
+}
+
+.locator .locator-search-submit:hover,
+.locator .locator-search-submit:focus {
+  background-color: var(--brand-secondary);
+  border-color: transparent;
 }
 
 .locator .locator-search-icon {
   display: inline-block;
-  width: 16px;
-  height: 16px;
-  border: 2px solid currentcolor;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #fff;
   border-radius: 50%;
   position: relative;
 }
@@ -78,137 +120,85 @@
 .locator .locator-search-icon::after {
   content: '';
   position: absolute;
-  right: -4px;
-  bottom: -4px;
-  width: 7px;
+  right: -5px;
+  bottom: -5px;
+  width: 8px;
   height: 2px;
-  background: currentcolor;
+  background: #fff;
   transform: rotate(45deg);
 }
 
-/* ---------- filters ---------- */
-.locator .locator-filters {
-  border: var(--border-width-s) solid var(--border-color);
-  border-radius: var(--border-radius-s);
-  overflow: hidden;
-}
-
-.locator .locator-filter-toggle {
-  width: 100%;
+/* ---------- filter button ---------- */
+.locator .locator-filter-button {
+  align-self: flex-start;
   margin: 0;
-  border: none;
-  border-radius: 0;
-  padding: var(--spacing-s) var(--spacing-m);
-  display: flex;
+  border: var(--border-width-s) solid var(--border-color);
+  border-radius: 999px;
+  padding: var(--spacing-xs) var(--spacing-m);
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
   gap: var(--spacing-xs);
-  background-color: var(--light-color);
+  background-color: var(--background-color);
   color: var(--text-color);
-  font-weight: 700;
   font-size: var(--body-font-size-s);
+  font-weight: 700;
 }
 
-.locator .locator-filter-toggle:hover {
+.locator .locator-filter-button:hover,
+.locator .locator-filter-button:focus {
   background-color: var(--light-color);
+  border-color: var(--border-color);
   color: var(--brand-primary);
+}
+
+.locator .locator-filter-icon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background:
+    linear-gradient(currentcolor 0 0) 0 3px / 16px 2px no-repeat,
+    linear-gradient(currentcolor 0 0) 0 8px / 11px 2px no-repeat,
+    linear-gradient(currentcolor 0 0) 0 13px / 6px 2px no-repeat;
+}
+
+.locator .locator-filter-count[hidden] {
+  display: none;
 }
 
 .locator .locator-filter-count {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 22px;
-  height: 22px;
+  min-width: 20px;
+  height: 20px;
   padding: 0 6px;
   border-radius: 999px;
-  background-color: var(--border-color);
-  color: var(--text-secondary-color);
-  font-size: var(--body-font-size-xs);
-  font-weight: 700;
-}
-
-.locator .locator-filter-count.has-count {
   background-color: var(--brand-primary);
   color: #fff;
-}
-
-.locator .locator-filter-panel {
-  padding: var(--spacing-s) var(--spacing-m) var(--spacing-m);
-  border-top: var(--border-width-s) solid var(--border-color);
-}
-
-.locator .locator-filter-hint {
-  margin: 0 0 var(--spacing-s);
-  color: var(--text-secondary-color);
   font-size: var(--body-font-size-xs);
 }
 
-.locator .locator-filter-group {
-  border-top: var(--border-width-s) solid var(--border-color);
-}
-
-.locator .locator-filter-group:first-of-type {
-  border-top: none;
-}
-
-.locator .locator-filter-group-toggle {
-  width: 100%;
-  margin: 0;
-  border: none;
-  border-radius: 0;
-  padding: var(--spacing-s) 0;
+/* ---------- appointment card ---------- */
+.locator .locator-appointment {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: none;
-  color: var(--text-color);
-  font-size: var(--body-font-size-s);
-  font-weight: 500;
+  flex-direction: column;
+  gap: var(--spacing-s);
+  padding: var(--spacing-m);
+  border: var(--border-width-s) solid var(--border-color);
+  border-radius: var(--locator-radius);
+  background-color: var(--light-color);
 }
 
-.locator .locator-filter-group-toggle:hover {
-  background: none;
-  color: var(--brand-primary);
-}
-
-.locator .locator-filter-group-toggle::after {
-  content: '';
-  width: 8px;
-  height: 8px;
-  border: 2px solid currentcolor;
-  border-width: 2px 2px 0 0;
-  transform: rotate(135deg);
-  transition: transform var(--transition-duration) var(--transition-easing);
-}
-
-.locator .locator-filter-group-toggle[aria-expanded='true']::after {
-  transform: rotate(-45deg);
-}
-
-.locator .locator-filter-options {
-  list-style: none;
+.locator .locator-appointment-title {
   margin: 0;
-  padding: 0 0 var(--spacing-s);
-  display: none;
+  font-size: var(--body-font-size-l);
+  font-weight: 700;
+  color: var(--heading-color);
 }
 
-.locator .locator-filter-group-toggle[aria-expanded='true'] + .locator-filter-options {
-  display: block;
-}
-
-.locator .locator-filter-options[data-empty='true'] .locator-filter-placeholder {
-  color: var(--text-secondary-color);
-  padding: var(--spacing-xs) 0;
-}
-
-.locator .locator-filter-option label {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-xs) 0;
-  font-size: var(--body-font-size-s);
-  cursor: pointer;
+.locator .locator-appointment-cta {
+  align-self: flex-start;
+  margin: 0;
 }
 
 /* ---------- results ---------- */
@@ -224,8 +214,6 @@
 }
 
 .locator .locator-results-scroll {
-  max-height: var(--locator-results-max-height);
-  overflow-y: auto;
   border: var(--border-width-s) solid var(--border-color);
   border-radius: var(--border-radius-s);
 }
@@ -234,6 +222,10 @@
   list-style: none;
   margin: 0;
   padding: 0;
+}
+
+.locator .locator-results-list:empty {
+  display: none;
 }
 
 .locator .locator-card {
@@ -310,10 +302,9 @@
   text-decoration: underline;
 }
 
-/* results states */
 .locator .locator-results-empty,
 .locator .locator-results-error {
-  padding: var(--spacing-xl) var(--spacing-m);
+  padding: var(--spacing-l) var(--spacing-m);
   text-align: center;
   color: var(--text-secondary-color);
   font-size: var(--body-font-size-s);
@@ -346,16 +337,11 @@
 
 .locator .locator-skeleton-line {
   width: 100%;
+  margin-bottom: 4px;
 }
 
 .locator .locator-skeleton-line.short {
   width: 45%;
-}
-
-.locator .locator-skeleton-cta {
-  width: 30%;
-  height: 14px;
-  margin-top: 4px;
 }
 
 @keyframes locator-shimmer {
@@ -367,73 +353,23 @@
 .locator .locator-map {
   position: relative;
   width: 100%;
-}
-
-.locator .locator-map-canvas {
-  position: relative;
-  width: 100%;
   min-height: var(--locator-map-min-height);
   height: var(--locator-map-min-height);
   border-radius: var(--locator-radius);
   overflow: hidden;
-  background-color: var(--light-color);
-  background-image:
-    linear-gradient(var(--border-color) 1px, transparent 1px),
-    linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
-  background-size: 40px 40px;
   border: var(--border-width-s) solid var(--border-color);
+  background-color: var(--light-color);
 }
 
-/* placeholder markers */
-.locator .locator-map-markers {
+.locator .locator-map-canvas {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
 }
 
-.locator .locator-map-marker {
-  position: absolute;
-  width: 18px;
-  height: 18px;
-  border-radius: 50% 50% 50% 0;
-  background-color: var(--brand-primary);
-  transform: rotate(-45deg);
-  opacity: 0.35;
-  box-shadow: var(--box-shadow);
-}
-
-.locator .locator-map-marker::after {
-  content: '';
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: var(--background-color);
-}
-
-.locator .locator-map-marker[data-active='true'] {
-  opacity: 1;
-}
-
-.locator .locator-map-marker:nth-child(1) {
-  top: 30%;
-  left: 28%;
-}
-
-.locator .locator-map-marker:nth-child(2) {
-  top: 52%;
-  left: 58%;
-}
-
-.locator .locator-map-marker:nth-child(3) {
-  top: 68%;
-  left: 38%;
-}
-
-/* map states — driven by data-map-state on the canvas */
 .locator .locator-map-loading,
-.locator .locator-map-empty {
+.locator .locator-map-unavailable {
   position: absolute;
   inset: 0;
   display: flex;
@@ -442,24 +378,10 @@
   justify-content: center;
   gap: var(--spacing-s);
   text-align: center;
-  padding: var(--spacing-m);
+  padding: var(--spacing-l);
   color: var(--text-secondary-color);
   font-size: var(--body-font-size-s);
-  background-color: rgb(245 246 252 / 85%);
-}
-
-.locator .locator-map-canvas[data-map-state='loading'] .locator-map-markers,
-.locator .locator-map-canvas[data-map-state='empty'] .locator-map-markers {
-  opacity: 0.3;
-}
-
-.locator .locator-map-canvas[data-map-state='ready'] .locator-map-loading,
-.locator .locator-map-canvas[data-map-state='empty'] .locator-map-loading {
-  display: none;
-}
-
-.locator .locator-map-canvas:not([data-map-state='empty']) .locator-map-empty {
-  display: none;
+  background-color: var(--light-color);
 }
 
 .locator .locator-map-spinner {
@@ -475,30 +397,36 @@
   to { transform: rotate(360deg); }
 }
 
+.locator .locator-map-pin-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50% 50% 50% 0;
+  background-color: var(--brand-primary);
+  transform: rotate(-45deg);
+  opacity: 0.6;
+}
+
 /* ============================================================
    Tablet (>=600px)
    ============================================================ */
 @media (width >= 600px) {
   .locator .locator-search {
     flex-direction: row;
-    align-items: stretch;
+    align-items: flex-end;
   }
 
-  .locator .locator-search-field {
-    flex: 0 0 auto;
+  .locator .locator-search-by-field {
+    flex: 0 0 200px;
   }
 
-  .locator .locator-search-by {
-    width: 180px;
-  }
-
-  .locator .locator-search-field-query {
+  .locator .locator-search-query-field {
     flex: 1 1 auto;
+    min-width: 0;
   }
 
-  .locator .locator-map-canvas {
-    min-height: 420px;
-    height: 420px;
+  .locator .locator-map {
+    min-height: 460px;
+    height: 460px;
   }
 }
 
@@ -508,7 +436,8 @@
 @media (width >= 900px) {
   .locator {
     flex-direction: row;
-    align-items: flex-start;
+    align-items: stretch;
+    gap: var(--spacing-l);
   }
 
   .locator .locator-panel-left {
@@ -518,16 +447,13 @@
 
   .locator .locator-panel-right {
     flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .locator .locator-map {
+    min-height: 640px;
+    height: 640px;
     position: sticky;
     top: calc(var(--nav-height) + var(--spacing-m));
-  }
-
-  .locator .locator-results-scroll {
-    max-height: var(--locator-results-max-height);
-  }
-
-  .locator .locator-map-canvas {
-    min-height: var(--locator-map-desktop-height);
-    height: var(--locator-map-desktop-height);
   }
 }
