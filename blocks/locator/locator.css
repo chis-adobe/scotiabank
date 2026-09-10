@@ -368,6 +368,13 @@
   height: 100%;
 }
 
+/* The [hidden] attribute must win over the display:flex below, otherwise the
+   overlays stay visible on top of a working map even after JS hides them. */
+.locator .locator-map-loading[hidden],
+.locator .locator-map-unavailable[hidden] {
+  display: none;
+}
+
 .locator .locator-map-loading,
 .locator .locator-map-unavailable {
   position: absolute;
