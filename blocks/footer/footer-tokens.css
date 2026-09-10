@@ -1,6 +1,13 @@
 /* footer design tokens */
-:root { /* @boilerplate */
-  --footer-max-width: var(--max-width-site); /* @boilerplate */
-  --footer-padding: var(--spacing-xl) var(--spacing-m) var(--spacing-m); /* @boilerplate */
-  --footer-padding-desktop: var(--spacing-xl) var(--spacing-l) var(--spacing-m); /* @boilerplate */
+:root {
+  --footer-max-width: var(--max-width-site);
+  --footer-padding: var(--spacing-xl) var(--spacing-m) var(--spacing-m);
+  --footer-padding-desktop: var(--spacing-xxl) var(--spacing-l) var(--spacing-l);
+  --footer-background: var(--light-color);
+  --footer-accent: var(--brand-primary);
+  --footer-column-gap: var(--spacing-l);
+  --footer-row-gap: var(--spacing-l);
+  --footer-heading-size: var(--body-font-size-m);
+  --footer-link-size: var(--body-font-size-s);
+  --footer-legal-size: var(--body-font-size-xs);
 }

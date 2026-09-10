@@ -223,9 +223,30 @@ export default async function decorate(block) {
 
   const navTools = nav.querySelector('.nav-tools');
   if (navTools) {
-    const search = navTools.querySelector('a[href*="search"]');
-    if (search && search.textContent === '') {
-      search.setAttribute('aria-label', 'Search');
+    // Decorate the utility navigation. Each utility link is tagged by the
+    // href fragment it points to so styling/behaviour stays data-driven and
+    // no user-facing text is hardcoded here (see content/nav.md fragment).
+    const utilityRoles = {
+      '#search': 'search',
+      '#sign-in': 'signin',
+      '#contact': 'contact',
+    };
+    navTools.querySelectorAll('a[href]').forEach((link) => {
+      const href = link.getAttribute('href') || '';
+      const role = Object.keys(utilityRoles).find((key) => href.startsWith(key));
+      if (role) link.classList.add(`nav-tools-${utilityRoles[role]}`);
+      // A two-character link (e.g. "EN") is the locale switcher.
+      if (link.textContent.trim().length <= 2) link.classList.add('nav-tools-locale');
+    });
+
+    // Promote the sign-in link to a primary CTA button.
+    const signIn = navTools.querySelector('.nav-tools-signin');
+    if (signIn) signIn.classList.add('button');
+
+    // Give the search entry point an accessible label and a leading icon.
+    const search = navTools.querySelector('.nav-tools-search');
+    if (search) {
+      search.setAttribute('aria-label', search.textContent.trim() || 'Search');
     }
   }
 

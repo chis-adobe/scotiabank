@@ -1,0 +1,14 @@
+/* locator design tokens (layout only; colors/typography use global tokens) */
+:root {
+  --locator-gap: var(--spacing-l);
+  --locator-left-width: 420px;
+  --locator-map-min-height: 320px;
+  --locator-map-desktop-height: 640px;
+  --locator-radius: var(--border-radius-m);
+  --locator-card-gap: var(--spacing-s);
+  --locator-results-max-height: 520px;
+  --locator-status-open: #128a4c;
+  --locator-status-closed: var(--brand-primary);
+  --locator-skeleton-base: #eceef4;
+  --locator-skeleton-shine: #f7f8fc;
+}
