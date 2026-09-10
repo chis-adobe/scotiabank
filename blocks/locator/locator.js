@@ -418,9 +418,16 @@ export default async function decorate(block) {
   // The unavailable panel surfaces the real reason so failures are debuggable
   // (missing key, blocked script, rejected key, or a runtime error).
   let mapController = null;
+  // Toggle both the `hidden` attribute AND an inline `display` — the inline
+  // style beats any stylesheet (including a stale, cached one), so an overlay
+  // can never stay painted over a working map after JS hides it.
+  const setOverlayVisible = (elem, visible) => {
+    elem.hidden = !visible;
+    elem.style.display = visible ? 'flex' : 'none';
+  };
   const showMapUnavailable = (reason) => {
-    mapLoading.hidden = true;
-    mapUnavailable.hidden = false;
+    setOverlayVisible(mapLoading, false);
+    setOverlayVisible(mapUnavailable, true);
     mapShell.setAttribute('data-map-state', 'unavailable');
     const detail = mapUnavailable.querySelector('.locator-map-unavailable-detail');
     if (detail && reason) detail.textContent = reason;
@@ -437,7 +444,7 @@ export default async function decorate(block) {
     mapController = createMap(maps, mapCanvas, {
       center: config.mapCenter, zoom: config.mapZoom, mapId: config.mapId,
     });
-    mapLoading.hidden = true;
+    setOverlayVisible(mapLoading, false);
     mapShell.setAttribute('data-map-state', 'ready');
   } catch (err) {
     const reasons = {
