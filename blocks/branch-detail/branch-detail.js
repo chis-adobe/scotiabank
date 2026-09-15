@@ -101,7 +101,10 @@ function el(tag, attrs = {}, ...children) {
 
 /** Fetches one branch by transit number; cache-busted for the demo env. */
 async function fetchBranch(endpoint, id) {
-  const url = `${endpoint}${encodeURIComponent(id)}&ck=${Date.now()}`;
+  // Cache-buster MUST be a `?` query string, not `&` — the persisted-query URL
+  // uses the `;name=value` suffix grammar, where a trailing `&ck=` would merge
+  // into the transitNumber value (…=83220&ck=…) and match no branch.
+  const url = `${endpoint}${encodeURIComponent(id)}?ck=${Date.now()}`;
   const resp = await fetch(url, { headers: { Accept: 'application/json' }, cache: 'no-store' });
   if (!resp.ok) throw new Error(`GraphQL request failed: ${resp.status}`);
   const json = await resp.json();
