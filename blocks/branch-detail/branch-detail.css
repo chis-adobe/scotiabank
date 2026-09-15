@@ -40,9 +40,21 @@
 }
 
 /* ---------- header ---------- */
+/* Flex column so the header always contains its children and spacing is
+   controlled by gap (not collapsing child margins). Also defends against the
+   global `header { height }` rule if the element ever changes back. */
+.branch-detail .branch-detail-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  height: auto;
+  gap: 6px;
+  margin-bottom: var(--spacing-l);
+}
+
 .branch-detail .branch-detail-back {
   display: inline-block;
-  margin-bottom: var(--spacing-m);
+  margin: 0 0 var(--spacing-s);
   font-size: var(--body-font-size-s);
   font-weight: 700;
   color: var(--brand-primary);
@@ -54,7 +66,7 @@
 }
 
 .branch-detail .branch-detail-name {
-  margin: 0 0 var(--spacing-xs);
+  margin: 0;
   font-size: var(--heading-font-size-xl);
   font-weight: 500;
   color: var(--heading-color);
@@ -64,7 +76,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  margin: 0 0 var(--spacing-xs);
+  margin: 0;
   font-size: var(--body-font-size-s);
   font-weight: 700;
 }
@@ -93,7 +105,7 @@
 }
 
 .branch-detail .branch-detail-type {
-  margin: 0 0 var(--spacing-l);
+  margin: 0;
   font-size: var(--body-font-size-s);
   color: var(--text-secondary-color);
 }

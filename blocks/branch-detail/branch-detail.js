@@ -194,8 +194,10 @@ function renderBranch(branch, config, mapCanvas) {
     ? `https://www.google.com/maps/dir/?api=1&destination=${address.latitude},${address.longitude}`
     : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addressText)}`;
 
-  // Header: name, status, branch type
-  const header = el('header', { class: 'branch-detail-header' },
+  // Header: name, status, branch type.
+  // NB: a <div>, not <header> — the global `header { height }` rule in
+  // styles.css targets any <header> and would pin this to the page-nav height.
+  const header = el('div', { class: 'branch-detail-header' },
     el('a', { class: 'branch-detail-back', href: config.backUrl, text: `‹ ${config.backLabel}` }),
     el('h1', { class: 'branch-detail-name', text: branch.branchName || branch.transitNumber || 'Branch' }),
     status ? el('p', { class: 'branch-detail-status', 'data-status': status.statusType },
