@@ -236,6 +236,19 @@ function el(tag, attrs = {}, ...children) {
   return node;
 }
 
+/**
+ * Builds a phone element: a clickable tel: link when a url is present, else
+ * plain text. Returns null when there's no phone (so callers can spread it).
+ * @param {string} phone display phone (e.g. "(604) 718-1500")
+ * @param {string} url tel: href, or falsy
+ * @param {string} className
+ */
+function buildPhoneEl(phone, url, className) {
+  if (!phone) return null;
+  if (url) return el('a', { class: className, href: url, text: phone });
+  return el('span', { class: className, text: phone });
+}
+
 /* ============================================================
    UI builders
    ============================================================ */
@@ -304,7 +317,7 @@ function buildSkeletonCard() {
 /** A real result card from a data record. */
 function buildResultCard(record, config) {
   const {
-    name, address, hours, status, statusType, url,
+    name, address, hours, status, statusType, phone, url,
   } = record;
   const parts = [];
   if (name) parts.push(el('h3', { class: 'locator-card-name', text: name }));
@@ -315,7 +328,12 @@ function buildResultCard(record, config) {
   }
   if (address) parts.push(el('p', { class: 'locator-card-address', text: address }));
   if (hours) parts.push(el('p', { class: 'locator-card-hours', text: hours }));
-  if (url) parts.push(el('a', { class: 'locator-card-cta', href: url, text: config.detailsCtaLabel }));
+  // Clickable tel: link (useful on mobile); falls back to plain text if no url.
+  const phoneEl = buildPhoneEl(phone, url, 'locator-card-phone');
+  if (phoneEl) parts.push(phoneEl);
+  if (config.detailsCtaLabel && url) {
+    parts.push(el('a', { class: 'locator-card-cta', href: url, text: config.detailsCtaLabel }));
+  }
   return el('li', { class: 'locator-card' }, el('div', { class: 'locator-card-body' }, ...parts));
 }
 
@@ -398,7 +416,8 @@ function createLocatorApi(block, refs, config, mapController) {
           title: r.name,
           content: el('div', { class: 'locator-infowindow' },
             el('strong', { text: r.name || '' }),
-            r.address ? el('span', { class: 'locator-infowindow-address', text: r.address }) : null),
+            r.address ? el('span', { class: 'locator-infowindow-address', text: r.address }) : null,
+            buildPhoneEl(r.phone, r.url, 'locator-infowindow-phone')),
         }));
       if (mapController) {
         mapController.setMarkers(points);

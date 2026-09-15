@@ -289,6 +289,19 @@
   color: var(--text-secondary-color);
 }
 
+.locator .locator-card-phone {
+  align-self: flex-start;
+  margin: 0;
+  font-size: var(--body-font-size-s);
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+a.locator-card-phone:hover {
+  color: var(--brand-primary);
+  text-decoration: underline;
+}
+
 .locator .locator-card-cta {
   align-self: flex-start;
   margin-top: 4px;
@@ -415,6 +428,11 @@
 
 .locator .locator-infowindow-address {
   color: var(--text-secondary-color);
+}
+
+.locator .locator-infowindow-phone {
+  color: var(--brand-primary);
+  text-decoration: none;
 }
 
 .locator .locator-map-unavailable-detail {
