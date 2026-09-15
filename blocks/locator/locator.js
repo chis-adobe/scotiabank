@@ -103,17 +103,28 @@ function computeStatus(hours) {
     : { status: `Closed · opens ${openLabel}`, statusType: 'closed' };
 }
 
-/** Builds a compact weekday hours summary string from an hours object. */
+const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+/** True when a day's open/close means "closed" (null, empty, or a "Closed" marker). */
+function isClosedDay(open, close) {
+  if (!open || !close) return true;
+  return /closed/i.test(open) || /closed/i.test(close);
+}
+
+/**
+ * Summarises TODAY's hours only, e.g. "Mon 09:30–17:00" or "Sun Closed".
+ * Avoids aggregating a whole week (which mis-rendered branches with varied
+ * weekday hours) and never falls back to the raw `title` slug.
+ */
 function summariseHours(hours) {
   if (!hours) return '';
-  const weekOpen = hours.mondayOpen;
-  const weekClose = hours.mondayClose;
-  const uniformWeekday = ['tuesday', 'wednesday', 'thursday', 'friday']
-    .every((d) => hours[`${d}Open`] === weekOpen && hours[`${d}Close`] === weekClose);
-  if (uniformWeekday && !/closed/i.test(weekOpen || 'closed')) {
-    return `Mon–Fri ${weekOpen}–${weekClose}`;
-  }
-  return hours.title || '';
+  const idx = new Date().getDay(); // 0 = Sunday
+  const day = WEEKDAYS[idx]; // WEEKDAYS is Sunday-first, aligned to getDay()
+  const label = DAY_LABELS[idx];
+  const open = hours[`${day}Open`];
+  const close = hours[`${day}Close`];
+  if (isClosedDay(open, close)) return `${label} Closed`;
+  return `${label} ${open}–${close}`;
 }
 
 /**
