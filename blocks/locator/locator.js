@@ -143,7 +143,10 @@ function mapBranchToRecord(item) {
     statusType,
     branchType: item.branchType?.title || '',
     phone: item.phoneNumber || '',
-    url: item.phoneNumber ? `tel:${item.phoneNumber.replace(/[^\d+]/g, '')}` : '',
+    // tel: link for the phone number (its own line/link on the card).
+    phoneUrl: item.phoneNumber ? `tel:${item.phoneNumber.replace(/[^\d+]/g, '')}` : '',
+    // Detail page: one query-param-driven page per branch, keyed by transit number.
+    detailUrl: item.transitNumber ? `/branch-details?id=${encodeURIComponent(item.transitNumber)}` : '',
     lat: typeof address.latitude === 'number' ? address.latitude : undefined,
     lng: typeof address.longitude === 'number' ? address.longitude : undefined,
   };
@@ -317,10 +320,15 @@ function buildSkeletonCard() {
 /** A real result card from a data record. */
 function buildResultCard(record, config) {
   const {
-    name, address, hours, status, statusType, phone, url,
+    name, address, hours, status, statusType, phone, phoneUrl, detailUrl,
   } = record;
   const parts = [];
-  if (name) parts.push(el('h3', { class: 'locator-card-name', text: name }));
+  // Name links to the branch detail page when we have a transit number.
+  if (name) {
+    parts.push(detailUrl
+      ? el('h3', { class: 'locator-card-name' }, el('a', { class: 'locator-card-name-link', href: detailUrl, text: name }))
+      : el('h3', { class: 'locator-card-name', text: name }));
+  }
   if (status) {
     parts.push(el('p', { class: 'locator-card-status', 'data-status': statusType || 'neutral' },
       el('span', { class: 'locator-card-status-dot', 'aria-hidden': 'true' }),
@@ -328,11 +336,12 @@ function buildResultCard(record, config) {
   }
   if (address) parts.push(el('p', { class: 'locator-card-address', text: address }));
   if (hours) parts.push(el('p', { class: 'locator-card-hours', text: hours }));
-  // Clickable tel: link (useful on mobile); falls back to plain text if no url.
-  const phoneEl = buildPhoneEl(phone, url, 'locator-card-phone');
+  // Phone as its own clickable tel: link (plain text if no number/url).
+  const phoneEl = buildPhoneEl(phone, phoneUrl, 'locator-card-phone');
   if (phoneEl) parts.push(phoneEl);
-  if (config.detailsCtaLabel && url) {
-    parts.push(el('a', { class: 'locator-card-cta', href: url, text: config.detailsCtaLabel }));
+  // "View details" → the branch detail page.
+  if (config.detailsCtaLabel && detailUrl) {
+    parts.push(el('a', { class: 'locator-card-cta', href: detailUrl, text: config.detailsCtaLabel }));
   }
   return el('li', { class: 'locator-card' }, el('div', { class: 'locator-card-body' }, ...parts));
 }
@@ -417,7 +426,8 @@ function createLocatorApi(block, refs, config, mapController) {
           content: el('div', { class: 'locator-infowindow' },
             el('strong', { text: r.name || '' }),
             r.address ? el('span', { class: 'locator-infowindow-address', text: r.address }) : null,
-            buildPhoneEl(r.phone, r.url, 'locator-infowindow-phone')),
+            buildPhoneEl(r.phone, r.phoneUrl, 'locator-infowindow-phone'),
+            r.detailUrl ? el('a', { class: 'locator-infowindow-details', href: r.detailUrl, text: config.detailsCtaLabel || 'View details' }) : null),
         }));
       if (mapController) {
         mapController.setMarkers(points);

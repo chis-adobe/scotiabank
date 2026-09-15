@@ -1,0 +1,307 @@
+/* ============================================================
+   Branch detail — single query-param-driven branch page.
+   Mobile-first: everything stacks. Desktop: info + map side by side.
+   ============================================================ */
+
+.branch-detail {
+  font-family: var(--body-font-family);
+  color: var(--text-color);
+}
+
+.branch-detail .branch-detail-inner {
+  max-width: var(--max-width-site);
+  margin: 0 auto;
+}
+
+/* ---------- loading / message states ---------- */
+.branch-detail .branch-detail-loading,
+.branch-detail .branch-detail-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-m);
+  min-height: 320px;
+  text-align: center;
+  color: var(--text-secondary-color);
+}
+
+.branch-detail .branch-detail-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--brand-primary);
+  border-radius: 50%;
+  animation: branch-detail-spin 0.8s linear infinite;
+}
+
+@keyframes branch-detail-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---------- header ---------- */
+.branch-detail .branch-detail-back {
+  display: inline-block;
+  margin-bottom: var(--spacing-m);
+  font-size: var(--body-font-size-s);
+  font-weight: 700;
+  color: var(--brand-primary);
+  text-decoration: none;
+}
+
+.branch-detail .branch-detail-back:hover {
+  text-decoration: underline;
+}
+
+.branch-detail .branch-detail-name {
+  margin: 0 0 var(--spacing-xs);
+  font-size: var(--heading-font-size-xl);
+  font-weight: 500;
+  color: var(--heading-color);
+}
+
+.branch-detail .branch-detail-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 var(--spacing-xs);
+  font-size: var(--body-font-size-s);
+  font-weight: 700;
+}
+
+.branch-detail .branch-detail-status-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background-color: var(--text-secondary-color);
+}
+
+.branch-detail .branch-detail-status[data-status='open'] {
+  color: #128a4c;
+}
+
+.branch-detail .branch-detail-status[data-status='open'] .branch-detail-status-dot {
+  background-color: #128a4c;
+}
+
+.branch-detail .branch-detail-status[data-status='closed'] {
+  color: var(--brand-primary);
+}
+
+.branch-detail .branch-detail-status[data-status='closed'] .branch-detail-status-dot {
+  background-color: var(--brand-primary);
+}
+
+.branch-detail .branch-detail-type {
+  margin: 0 0 var(--spacing-l);
+  font-size: var(--body-font-size-s);
+  color: var(--text-secondary-color);
+}
+
+/* ---------- body layout ---------- */
+.branch-detail .branch-detail-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-l);
+}
+
+.branch-detail .branch-detail-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-l);
+}
+
+/* ---------- sections ---------- */
+.branch-detail .branch-detail-section {
+  margin: 0;
+}
+
+.branch-detail .branch-detail-section-title {
+  margin: 0 0 var(--spacing-s);
+  font-size: var(--body-font-size-m);
+  font-weight: 700;
+  color: var(--heading-color);
+}
+
+.branch-detail .branch-detail-address {
+  margin: 0 0 var(--spacing-s);
+  font-size: var(--body-font-size-m);
+  color: var(--text-color);
+}
+
+.branch-detail .branch-detail-directions {
+  margin: 0;
+}
+
+.branch-detail .branch-detail-phone {
+  font-size: var(--body-font-size-m);
+  color: var(--brand-primary);
+  text-decoration: none;
+}
+
+.branch-detail .branch-detail-phone:hover {
+  text-decoration: underline;
+}
+
+/* ---------- hours ---------- */
+.branch-detail .branch-detail-hours-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-l);
+}
+
+.branch-detail .branch-detail-hours {
+  border: var(--border-width-s) solid var(--border-color);
+  border-radius: var(--border-radius-m);
+  overflow: hidden;
+}
+
+.branch-detail .branch-detail-hours-row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-m);
+  padding: var(--spacing-xs) var(--spacing-s);
+  font-size: var(--body-font-size-s);
+  border-bottom: var(--border-width-s) solid var(--border-color);
+}
+
+.branch-detail .branch-detail-hours-row:last-child {
+  border-bottom: none;
+}
+
+.branch-detail .branch-detail-hours-row[data-today='true'] {
+  background-color: var(--light-color);
+  font-weight: 700;
+}
+
+.branch-detail .branch-detail-hours-day {
+  color: var(--text-color);
+}
+
+.branch-detail .branch-detail-hours-time {
+  color: var(--text-secondary-color);
+}
+
+.branch-detail .branch-detail-hours-row[data-today='true'] .branch-detail-hours-time {
+  color: var(--text-color);
+}
+
+/* ---------- chips ---------- */
+.branch-detail .branch-detail-chips {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+}
+
+.branch-detail .branch-detail-chip {
+  padding: 4px var(--spacing-s);
+  border: var(--border-width-s) solid var(--border-color);
+  border-radius: 999px;
+  background-color: var(--light-color);
+  font-size: var(--body-font-size-xs);
+  color: var(--text-color);
+}
+
+/* ---------- map ---------- */
+.branch-detail .branch-detail-map-wrap {
+  position: relative;
+  width: 100%;
+  min-height: 320px;
+  height: 320px;
+  border-radius: var(--border-radius-m);
+  overflow: hidden;
+  border: var(--border-width-s) solid var(--border-color);
+  background-color: var(--light-color);
+}
+
+.branch-detail .branch-detail-map-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.branch-detail .branch-detail-map-unavailable {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-s);
+  text-align: center;
+  padding: var(--spacing-l);
+  color: var(--text-secondary-color);
+  font-size: var(--body-font-size-s);
+  background-color: var(--light-color);
+}
+
+.branch-detail .branch-detail-map-unavailable[hidden] {
+  display: none;
+}
+
+.branch-detail .branch-detail-map-pin {
+  width: 26px;
+  height: 26px;
+  border-radius: 50% 50% 50% 0;
+  background-color: var(--brand-primary);
+  transform: rotate(-45deg);
+  opacity: 0.6;
+}
+
+/* ============================================================
+   Tablet (>=600px)
+   ============================================================ */
+@media (width >= 600px) {
+  .branch-detail .branch-detail-info {
+    flex-flow: row wrap;
+  }
+
+  .branch-detail .branch-detail-contact,
+  .branch-detail .branch-detail-hours-col {
+    flex: 1 1 45%;
+    min-width: 0;
+  }
+
+  .branch-detail .branch-detail-map-wrap {
+    min-height: 400px;
+    height: 400px;
+  }
+}
+
+/* ============================================================
+   Desktop (>=900px) — info left, map right
+   ============================================================ */
+@media (width >= 900px) {
+  .branch-detail .branch-detail-body {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .branch-detail .branch-detail-info {
+    flex: 1 1 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-xl);
+  }
+
+  .branch-detail .branch-detail-contact {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-l);
+  }
+
+  .branch-detail .branch-detail-map {
+    flex: 0 0 380px;
+    position: sticky;
+    top: calc(var(--nav-height) + var(--spacing-m));
+  }
+
+  .branch-detail .branch-detail-map-wrap {
+    min-height: 460px;
+    height: 460px;
+  }
+}
