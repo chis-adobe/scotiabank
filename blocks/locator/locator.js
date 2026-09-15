@@ -154,11 +154,22 @@ function normalisePostalCode(value) {
 
 /**
  * Runs a GraphQL persisted query and returns mapped branch records.
+ *
+ * This is a DEMO environment: branch data changes frequently and stale
+ * responses are never wanted, so every request is cache-busted two ways —
+ * a unique query param (defeats CDN/proxy URL caches) and no-store fetch
+ * options (defeats the browser HTTP cache). Persisted-query URLs use the
+ * `;name=value` suffix syntax, so the buster is added as a normal `?ck=…`
+ * query string, which is independent of that suffix.
  * @param {string} url fully-formed persisted-query URL (incl. any ;postal=… suffix)
  * @returns {Promise<Array<object>>}
  */
 async function fetchBranches(url) {
-  const resp = await fetch(url, { headers: { Accept: 'application/json' } });
+  const bustedUrl = `${url}${url.includes('?') ? '&' : '?'}ck=${Date.now()}`;
+  const resp = await fetch(bustedUrl, {
+    headers: { Accept: 'application/json' },
+    cache: 'no-store',
+  });
   if (!resp.ok) throw new Error(`GraphQL request failed: ${resp.status}`);
   const json = await resp.json();
   const items = json?.data?.branchList?.items || [];
