@@ -39,8 +39,8 @@
   to { transform: rotate(360deg); }
 }
 
-/* ---------- header ---------- */
-/* Flex column so the header always contains its children and spacing is
+/* ---------- header ----------
+   Flex column so the header always contains its children and spacing is
    controlled by gap (not collapsing child margins). Also defends against the
    global `header { height }` rule if the element ever changes back. */
 .branch-detail .branch-detail-header {
