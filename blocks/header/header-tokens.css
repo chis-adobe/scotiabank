@@ -1,33 +1,29 @@
-/* header design tokens — Scotiabank two-tier header (utility bar + main nav) */
+/* header design tokens — Scotiabank two-row header
+   (row 1: primary links; row 2: logo + search + utility icon-links + Sign In) */
 :root {
   --header-nav-max-width: var(--max-width-site);
   --header-nav-max-width-desktop: var(--max-width-site);
   --header-nav-padding: 0 var(--spacing-m);
   --header-nav-padding-desktop: 0 var(--spacing-s);
+  --header-nav-padding-inline: var(--spacing-s);
   --header-nav-gap: var(--spacing-m);
   --header-nav-gap-desktop: var(--spacing-l);
-  --header-brand-width: 150px;
+  --header-brand-width: 190px;
 
-  /* utility bar (top tier, desktop only) */
-  --header-utility-height: 44px;
-  --header-utility-bg: var(--light-color);
-  --header-utility-color: var(--text-color);
+  /* row 1: primary links */
+  --header-utility-height: 48px;
 
-  /* main nav bar (bottom tier) */
-  --header-main-height: 68px;
+  /* row 2: main bar — tall to fit the search bar + Sign In button */
+  --header-main-height: 84px;
 
-  /* dropdown megamenu */
-  --header-dropdown-width: 240px;
-  --header-dropdown-padding: var(--spacing-m);
-  --header-dropdown-left: 0;
+  /* search bar + utility links */
+  --header-search-height: 52px;
+  --header-search-max-width: 420px;
+  --header-tools-gap: var(--spacing-l);
 
   /* hamburger */
   --header-hamburger-size: 24px;
   --header-hamburger-bar-width: 22px;
   --header-hamburger-bar-height: 2px;
   --header-hamburger-bar-radius: 2px;
-
-  /* dropdown caret */
-  --header-dropdown-arrow-size: 6px;
-  --header-dropdown-arrow-thickness: 2px;
 }

@@ -4,6 +4,55 @@ import { loadFragment } from '../fragment/fragment.js';
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
 
+// Inline SVG path data for the utility icons (built as DOM, not innerHTML, to
+// stay CSP-safe). Each entry is an array of <path>/<circle> child specs.
+const SVG_NS = 'http://www.w3.org/2000/svg';
+const NAV_ICONS = {
+  // magnifying glass
+  search: [['path', { d: 'M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.7.7l.27.28v.79l5 4.99L20.49 19zm-6 0A4.5 4.5 0 1 1 14 9.5 4.49 4.49 0 0 1 9.5 14z' }]],
+  // map pin
+  location: [['path', {
+    d: 'M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 14.5 9 2.5 2.5 0 0 1 12 11.5z',
+  }]],
+  // phone handset
+  phone: [['path', {
+    d: 'M6.6 10.8a15.2 15.2 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.2 11.4 11.4 0 0 0 3.6.5 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .6 3.6 1 1 0 0 1-.3 1z',
+  }]],
+  // rosette / offers
+  offers: [
+    ['circle', { cx: '12', cy: '9', r: '6', fill: 'none', stroke: 'currentColor', 'stroke-width': '1.6' }],
+    ['path', {
+      d: 'M9 13.5 7.5 21l4.5-2.2L16.5 21 15 13.5', fill: 'none', stroke: 'currentColor', 'stroke-width': '1.6', 'stroke-linejoin': 'round',
+    }],
+    ['path', {
+      d: 'm12 6 .9 1.8 2 .3-1.45 1.4.34 2L12 10.55 10.2 11.5l.34-2L9.1 8.1l2-.3z', fill: 'currentColor', stroke: 'none',
+    }],
+  ],
+  // padlock
+  lock: [
+    ['path', { d: 'M17 9h-1V7a4 4 0 0 0-8 0v2H7a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1zm-5 8a1.5 1.5 0 1 1 1.5-1.5A1.5 1.5 0 0 1 12 17zm2.5-8h-5V7a2.5 2.5 0 0 1 5 0z' }],
+  ],
+};
+
+/**
+ * Builds an inline SVG icon element from NAV_ICONS (DOM only, no innerHTML).
+ * @param {string} name key in NAV_ICONS
+ * @returns {SVGElement}
+ */
+function navIcon(name) {
+  const svg = document.createElementNS(SVG_NS, 'svg');
+  svg.setAttribute('class', `nav-icon nav-icon-${name}`);
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.setAttribute('focusable', 'false');
+  (NAV_ICONS[name] || []).forEach(([tag, attrs]) => {
+    const node = document.createElementNS(SVG_NS, tag);
+    Object.entries(attrs).forEach(([k, v]) => node.setAttribute(k, v));
+    svg.append(node);
+  });
+  return svg;
+}
+
 function closeOnEscape(e) {
   if (e.code === 'Escape') {
     const nav = document.getElementById('nav');
@@ -221,33 +270,57 @@ export default async function decorate(block) {
     });
   }
 
+  // Build the hardcoded search bar that sits between the logo and the utility
+  // links on the main row. Non-functional for now (matches the reference).
+  const buildSearchBar = () => {
+    const form = document.createElement('form');
+    form.className = 'nav-search';
+    form.setAttribute('role', 'search');
+    form.addEventListener('submit', (e) => e.preventDefault());
+    const input = document.createElement('input');
+    input.type = 'search';
+    input.className = 'nav-search-input';
+    input.placeholder = 'Begin Your Search';
+    input.setAttribute('aria-label', 'Begin Your Search');
+    const button = document.createElement('button');
+    button.type = 'submit';
+    button.className = 'nav-search-button';
+    button.setAttribute('aria-label', 'Search');
+    button.append(navIcon('search'));
+    form.append(input, button);
+    return form;
+  };
+
   const navTools = nav.querySelector('.nav-tools');
   if (navTools) {
-    // Decorate the utility navigation. Each utility link is tagged by the
-    // href fragment it points to so styling/behaviour stays data-driven and
-    // no user-facing text is hardcoded here (see content/nav.md fragment).
-    const utilityRoles = {
-      '#search': 'search',
-      '#sign-in': 'signin',
-      '#contact': 'contact',
-    };
+    // Decorate the utility navigation. Each link is tagged by the href fragment
+    // it points to, then given a matching icon. Text stays in the nav fragment.
+    const utilityRoles = [
+      { match: (h, t) => h.includes('branch-locator') || /location/i.test(t), role: 'location', icon: 'location' },
+      { match: (h) => h.startsWith('#contact'), role: 'contact', icon: 'phone' },
+      { match: (h) => h.startsWith('#offers'), role: 'offers', icon: 'offers' },
+      { match: (h) => h.startsWith('#sign-in'), role: 'signin', icon: 'lock' },
+    ];
     navTools.querySelectorAll('a[href]').forEach((link) => {
       const href = link.getAttribute('href') || '';
-      const role = Object.keys(utilityRoles).find((key) => href.startsWith(key));
-      if (role) link.classList.add(`nav-tools-${utilityRoles[role]}`);
-      // A two-character link (e.g. "EN") is the locale switcher.
-      if (link.textContent.trim().length <= 2) link.classList.add('nav-tools-locale');
+      const text = link.textContent.trim();
+      const entry = utilityRoles.find((r) => r.match(href, text));
+      if (!entry) return;
+      link.classList.add(`nav-tools-${entry.role}`);
+      // Prepend the icon; keep the existing text label as a child span.
+      const label = document.createElement('span');
+      label.className = 'nav-tools-label';
+      label.textContent = text;
+      link.textContent = '';
+      link.append(navIcon(entry.icon), label);
     });
 
     // Promote the sign-in link to a primary CTA button.
     const signIn = navTools.querySelector('.nav-tools-signin');
     if (signIn) signIn.classList.add('button');
 
-    // Give the search entry point an accessible label and a leading icon.
-    const search = navTools.querySelector('.nav-tools-search');
-    if (search) {
-      search.setAttribute('aria-label', search.textContent.trim() || 'Search');
-    }
+    // Insert the search bar at the start of the tools group.
+    navTools.prepend(buildSearchBar());
   }
 
   // hamburger for mobile
