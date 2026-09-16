@@ -59,6 +59,12 @@ header nav[aria-expanded='true'] {
   }
 
   header nav[aria-expanded='true'] {
+    /* re-assert the desktop two-row grid — the boilerplate opens the nav
+       (aria-expanded=true) on desktop, and that variant would otherwise keep
+       the mobile stacked template. */
+    grid-template:
+      'sections sections' var(--header-utility-height)
+      'brand tools' var(--header-main-height) / auto 1fr;
     min-height: 0;
     overflow: visible;
   }
@@ -357,9 +363,17 @@ header nav .nav-tools a.button .nav-icon {
 }
 
 @media (width >= 900px) {
+  /* main row: search bar (grows) + utility links, all inline and centered */
   header nav .nav-tools {
-    place-self: center end;
+    place-self: center stretch;
     width: 100%;
+    display: flex;
+    align-items: center;
+    gap: var(--header-tools-gap);
+  }
+
+  header nav .nav-tools .default-content-wrapper {
+    flex: 0 0 auto;
   }
 
   header nav .nav-tools ul {
