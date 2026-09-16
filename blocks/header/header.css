@@ -343,11 +343,15 @@ header nav .nav-icon {
   flex: 0 0 auto;
 }
 
-/* Sign-in CTA */
+/* Sign-in CTA — icon + label centered together in the button */
 header nav .nav-tools a.button {
   margin: 0;
   padding: 0 var(--spacing-l);
   height: var(--header-search-height);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
   color: var(--button-text-color);
   font-size: var(--body-font-size-m);
   font-weight: 700;
