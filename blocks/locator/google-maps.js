@@ -33,7 +33,8 @@ export function loadGoogleMaps(apiKey) {
       key: apiKey,
       loading: 'async',
       callback: callbackName,
-      libraries: 'marker',
+      // marker: map pins; places: address autocomplete (branch-detail form).
+      libraries: 'marker,places',
     });
     script.src = `https://maps.googleapis.com/maps/api/js?${params.toString()}`;
     script.async = true;

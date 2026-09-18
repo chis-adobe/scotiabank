@@ -33,6 +33,17 @@ const DEFAULT_CONFIG = {
     phone: 'Phone',
     getDirections: 'Get directions',
   },
+  // Contact request form (data-driven for localization).
+  form: {
+    title: 'Contact request',
+    nameLabel: 'Name',
+    productLabel: 'Product of interest',
+    addressLabel: 'Address',
+    addressPlaceholder: 'Start typing your address…',
+    messageLabel: 'Message',
+    submitLabel: 'Send request',
+    successText: 'Thanks — your request has been received. A representative will be in touch.',
+  },
   mapZoom: 15,
   mapId: '',
   apiKey: '',
@@ -162,13 +173,72 @@ function buildHoursTable(hours) {
   return el('div', { class: 'branch-detail-hours' }, ...rows);
 }
 
-/** Builds one labelled hours card (skipped when the set has no open days). */
-function buildHoursSection(label, hours) {
-  const table = buildHoursTable(hours);
-  if (!table) return null;
-  return el('section', { class: 'branch-detail-section branch-detail-hours-section' },
-    el('h2', { class: 'branch-detail-section-title', text: label }),
-    table);
+/**
+ * Builds a tabbed hours component (Teller Service / Advisor / ABM), mirroring
+ * the reference detail page. Only sets that have open days become tabs.
+ * @param {Array<{label:string, hours:object}>} sets
+ */
+function buildHoursTabs(sets) {
+  const panels = sets
+    .map((s) => ({ label: s.label, table: buildHoursTable(s.hours) }))
+    .filter((s) => s.table);
+  if (!panels.length) return null;
+
+  const tablist = el('div', { class: 'branch-detail-tabs-list', role: 'tablist', 'aria-label': 'Branch hours' });
+  const panelWrap = el('div', { class: 'branch-detail-tabs-panels' });
+
+  panels.forEach((p, i) => {
+    const id = `hours-tab-${i}`;
+    const panelId = `hours-panel-${i}`;
+    const tab = el('button', {
+      class: 'branch-detail-tab',
+      type: 'button',
+      role: 'tab',
+      id,
+      'aria-controls': panelId,
+      'aria-selected': i === 0 ? 'true' : 'false',
+      tabindex: i === 0 ? '0' : '-1',
+    }, el('span', { text: p.label }));
+    const panel = el('div', {
+      class: 'branch-detail-tab-panel',
+      id: panelId,
+      role: 'tabpanel',
+      'aria-labelledby': id,
+      hidden: i === 0 ? null : '',
+    }, p.table);
+    tab.addEventListener('click', () => {
+      tablist.querySelectorAll('[role="tab"]').forEach((t) => {
+        t.setAttribute('aria-selected', 'false');
+        t.setAttribute('tabindex', '-1');
+      });
+      panelWrap.querySelectorAll('[role="tabpanel"]').forEach((pn) => { pn.hidden = true; });
+      tab.setAttribute('aria-selected', 'true');
+      tab.setAttribute('tabindex', '0');
+      panel.hidden = false;
+    });
+    tablist.append(tab);
+    panelWrap.append(panel);
+  });
+
+  // Arrow-key navigation between tabs (WAI-ARIA tabs pattern).
+  tablist.addEventListener('keydown', (e) => {
+    const tabs = [...tablist.querySelectorAll('[role="tab"]')];
+    const current = tabs.indexOf(document.activeElement);
+    if (current < 0) return;
+    let next = null;
+    if (e.key === 'ArrowRight') next = (current + 1) % tabs.length;
+    else if (e.key === 'ArrowLeft') next = (current - 1 + tabs.length) % tabs.length;
+    if (next !== null) {
+      e.preventDefault();
+      tabs[next].focus();
+      tabs[next].click();
+    }
+  });
+
+  return el('section', { class: 'branch-detail-section branch-detail-tabs' },
+    el('h2', { class: 'branch-detail-section-title', text: 'Branch info' }),
+    tablist,
+    panelWrap);
 }
 
 /** Chip list (services / languages). */
@@ -178,6 +248,97 @@ function buildChips(label, values) {
     el('h2', { class: 'branch-detail-section-title', text: label }),
     el('ul', { class: 'branch-detail-chips' },
       ...values.map((v) => el('li', { class: 'branch-detail-chip', text: v }))));
+}
+
+/** Builds a labelled text field. */
+function buildField(id, labelText, { type = 'text', autocomplete } = {}) {
+  const input = el('input', {
+    class: 'branch-detail-form-input',
+    id,
+    name: id,
+    type,
+    autocomplete: autocomplete || 'off',
+  });
+  const field = el('div', { class: 'branch-detail-form-field' },
+    el('label', { class: 'branch-detail-form-label', for: id }, el('span', { text: labelText })),
+    input);
+  return { field, input };
+}
+
+/**
+ * Builds the Contact Request form (Name, Product of Interest, Address, Message).
+ * Message is a lightweight RTE (contenteditable) with bold/italic/underline.
+ * Non-functional submit (demo) — logs the payload and shows a confirmation.
+ * Returns the root plus the address input (for Places autocomplete wiring).
+ */
+function buildContactForm(config, branch) {
+  const { form: formCfg } = config;
+  const name = buildField('cr-name', formCfg.nameLabel);
+  const product = buildField('cr-product', formCfg.productLabel);
+  const address = buildField('cr-address', formCfg.addressLabel, { autocomplete: 'off' });
+  address.input.setAttribute('placeholder', formCfg.addressPlaceholder);
+
+  // Message RTE (contenteditable div + a tiny toolbar).
+  const editor = el('div', {
+    class: 'branch-detail-form-rte',
+    id: 'cr-message',
+    role: 'textbox',
+    'aria-multiline': 'true',
+    'aria-label': formCfg.messageLabel,
+    contenteditable: 'true',
+  });
+  const rteButton = (cmd, label, glyph) => {
+    const b = el('button', {
+      class: 'branch-detail-rte-btn', type: 'button', 'aria-label': label, title: label,
+    }, el('span', { text: glyph }));
+    // execCommand is deprecated but is the simplest dependency-free RTE for a demo.
+    b.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      editor.focus();
+      document.execCommand(cmd, false, null);
+    });
+    return b;
+  };
+  const toolbar = el('div', { class: 'branch-detail-rte-toolbar', role: 'toolbar', 'aria-label': 'Text formatting' },
+    rteButton('bold', 'Bold', 'B'),
+    rteButton('italic', 'Italic', 'I'),
+    rteButton('underline', 'Underline', 'U'));
+  const messageField = el('div', { class: 'branch-detail-form-field' },
+    el('label', { class: 'branch-detail-form-label', for: 'cr-message' }, el('span', { text: formCfg.messageLabel })),
+    el('div', { class: 'branch-detail-rte' }, toolbar, editor));
+
+  const status = el('p', { class: 'branch-detail-form-status', role: 'status', hidden: '' });
+  const submit = el('button', { class: 'button branch-detail-form-submit', type: 'submit', text: formCfg.submitLabel });
+
+  const form = el('form', { class: 'branch-detail-form' },
+    name.field, product.field, address.field, messageField, submit, status);
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const payload = {
+      branch: branch.branchName || branch.transitNumber || '',
+      name: name.input.value.trim(),
+      product: product.input.value.trim(),
+      address: address.input.value.trim(),
+      message: editor.innerHTML.trim(),
+    };
+    // Demo: no backend. Announce success and reset. A real integration would
+    // POST this payload (e.g. to an AEM Forms / Adaptive Form endpoint).
+    // eslint-disable-next-line no-console
+    console.log('[branch-detail] contact request', payload);
+    status.textContent = formCfg.successText;
+    status.hidden = false;
+    form.dispatchEvent(new CustomEvent('branch-detail:contact-submit', { detail: payload, bubbles: true }));
+    name.input.value = '';
+    product.input.value = '';
+    address.input.value = '';
+    editor.textContent = '';
+  });
+
+  const root = el('section', { class: 'branch-detail-form-section' },
+    el('h2', { class: 'branch-detail-section-title', text: formCfg.title }),
+    form);
+  return { root, addressInput: address.input };
 }
 
 /** Builds the full branch detail DOM from a record + config. */
@@ -218,21 +379,27 @@ function renderBranch(branch, config, mapCanvas) {
     buildChips(labels.services, (branch.features || []).map((f) => f.title).filter(Boolean)),
     buildChips(labels.languages, (branch.languages || []).map((l) => l.title).filter(Boolean)));
 
-  // Hours column (teller / advisor / ABM)
-  const hoursCol = el('div', { class: 'branch-detail-hours-col' },
-    buildHoursSection(labels.tellerHours, branch.tellerHours),
-    buildHoursSection(labels.advisorHours, branch.advisorHours),
-    buildHoursSection(labels.abmHours, branch.abmHours));
+  // Hours as a tabbed component (Teller Service / Advisor / ABM).
+  const hoursTabs = buildHoursTabs([
+    { label: labels.tellerHours, hours: branch.tellerHours },
+    { label: labels.advisorHours, hours: branch.advisorHours },
+    { label: labels.abmHours, hours: branch.abmHours },
+  ]);
+
+  // Right column: map on top, contact request form stacked below it.
+  const contactForm = buildContactForm(config, branch);
+  const mapCol = el('div', { class: 'branch-detail-map' }, mapCanvas, contactForm.root);
 
   const body = el('div', { class: 'branch-detail-body' },
-    el('div', { class: 'branch-detail-info' }, contact, hoursCol),
-    el('div', { class: 'branch-detail-map' }, mapCanvas));
+    el('div', { class: 'branch-detail-info' }, contact, hoursTabs),
+    mapCol);
 
   return {
     root: el('div', { class: 'branch-detail-inner' }, header, body),
     hasGeo,
     center: hasGeo ? { lat: address.latitude, lng: address.longitude } : null,
     label: branch.branchName || '',
+    addressInput: contactForm.addressInput,
   };
 }
 
@@ -289,28 +456,46 @@ export default async function decorate(block) {
     el('p', { text: config.mapUnavailableText }));
   const mapWrap = el('div', { class: 'branch-detail-map-wrap' }, mapCanvas, mapUnavailable);
 
-  const { root, hasGeo, center } = renderBranch(branch, config, mapWrap);
+  const {
+    root, hasGeo, center, addressInput,
+  } = renderBranch(branch, config, mapWrap);
   block.replaceChildren(root);
 
-  // Initialise the map (graceful fallback). Only when the branch has coords.
-  if (hasGeo) {
-    try {
-      const maps = await loadGoogleMaps(config.apiKey);
-      const controller = createMap(maps, mapCanvas, { center, zoom: config.mapZoom, mapId: config.mapId });
-      controller.setMarkers([{
-        lat: center.lat,
-        lng: center.lng,
-        title: branch.branchName,
-      }]);
-    } catch (err) {
-      mapUnavailable.hidden = false;
-      mapUnavailable.style.display = 'flex';
-      // eslint-disable-next-line no-console
-      console.warn('[branch-detail] map unavailable —', err.message);
-    }
+  // Initialise Google Maps once, then drive both the map and the address
+  // autocomplete from the same load. Graceful fallback if the key is missing
+  // or the script fails — the form still works, just without autocomplete.
+  let maps = null;
+  try {
+    maps = await loadGoogleMaps(config.apiKey);
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.warn('[branch-detail] Google Maps unavailable —', err.message);
+  }
+
+  if (maps && hasGeo) {
+    const controller = createMap(maps, mapCanvas, { center, zoom: config.mapZoom, mapId: config.mapId });
+    controller.setMarkers([{ lat: center.lat, lng: center.lng, title: branch.branchName }]);
   } else {
     mapUnavailable.hidden = false;
     mapUnavailable.style.display = 'flex';
+  }
+
+  // Address autocomplete on the contact form (Places library).
+  if (maps && addressInput && maps.places?.Autocomplete) {
+    try {
+      const ac = new maps.places.Autocomplete(addressInput, {
+        fields: ['formatted_address'],
+        types: ['address'],
+        componentRestrictions: { country: ['ca'] },
+      });
+      ac.addListener('place_changed', () => {
+        const place = ac.getPlace();
+        if (place?.formatted_address) addressInput.value = place.formatted_address;
+      });
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.warn('[branch-detail] address autocomplete unavailable —', err.message);
+    }
   }
 
   block.dispatchEvent(new CustomEvent('branch-detail:ready', { detail: { branch }, bubbles: true }));
