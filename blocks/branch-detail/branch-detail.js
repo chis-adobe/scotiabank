@@ -277,6 +277,11 @@ function buildContactForm(config, branch) {
   const product = buildField('cr-product', formCfg.productLabel);
   const address = buildField('cr-address', formCfg.addressLabel, { autocomplete: 'off' });
   address.input.setAttribute('placeholder', formCfg.addressPlaceholder);
+  // Empty mount point for the Google PlaceAutocompleteElement web component.
+  // It's populated in decorate() once Maps loads; until then (or on failure)
+  // the plain input above stays visible as a graceful fallback.
+  const addressMount = el('div', { class: 'branch-detail-pac-mount', hidden: '' });
+  address.field.append(addressMount);
 
   // Message RTE (contenteditable div + a tiny toolbar).
   const editor = el('div', {
@@ -338,7 +343,9 @@ function buildContactForm(config, branch) {
   const root = el('section', { class: 'branch-detail-form-section' },
     el('h2', { class: 'branch-detail-section-title', text: formCfg.title }),
     form);
-  return { root, addressInput: address.input };
+  return {
+    root, addressInput: address.input, addressMount, addressLabel: address.field.querySelector('label'),
+  };
 }
 
 /** Builds the full branch detail DOM from a record + config. */
@@ -400,7 +407,43 @@ function renderBranch(branch, config, mapCanvas) {
     center: hasGeo ? { lat: address.latitude, lng: address.longitude } : null,
     label: branch.branchName || '',
     addressInput: contactForm.addressInput,
+    addressMount: contactForm.addressMount,
+    addressLabel: contactForm.addressLabel,
   };
+}
+
+/**
+ * Mounts the modern Google PlaceAutocompleteElement in place of the plain
+ * address input (which stays as fallback). The selected formatted address is
+ * mirrored back into the plain input so the form-submit payload is unchanged.
+ * @param {google.maps} maps loaded maps namespace
+ * @param {{addressInput:HTMLElement, addressMount:HTMLElement, addressLabel:HTMLElement}} refs
+ */
+async function mountAddressAutocomplete(maps, refs) {
+  const { addressInput, addressMount, addressLabel } = refs;
+  try {
+    const placesLib = await maps.importLibrary('places');
+    const PlaceAutocompleteElement = placesLib?.PlaceAutocompleteElement
+      || maps.places?.PlaceAutocompleteElement;
+    if (!PlaceAutocompleteElement) return;
+
+    const pac = new PlaceAutocompleteElement({ includedRegionCodes: ['ca'] });
+    pac.id = 'cr-address-pac';
+    pac.className = 'branch-detail-pac';
+    if (addressLabel) addressLabel.setAttribute('for', 'cr-address-pac');
+    // Swap the plain input for the web component.
+    addressInput.hidden = true;
+    addressMount.hidden = false;
+    addressMount.append(pac);
+    pac.addEventListener('gmp-select', async ({ placePrediction }) => {
+      const place = placePrediction.toPlace();
+      await place.fetchFields({ fields: ['formattedAddress'] });
+      addressInput.value = place.formattedAddress || '';
+    });
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.warn('[branch-detail] address autocomplete unavailable —', err.message);
+  }
 }
 
 /* ============================================================
@@ -457,7 +500,7 @@ export default async function decorate(block) {
   const mapWrap = el('div', { class: 'branch-detail-map-wrap' }, mapCanvas, mapUnavailable);
 
   const {
-    root, hasGeo, center, addressInput,
+    root, hasGeo, center, addressInput, addressMount, addressLabel,
   } = renderBranch(branch, config, mapWrap);
   block.replaceChildren(root);
 
@@ -480,22 +523,9 @@ export default async function decorate(block) {
     mapUnavailable.style.display = 'flex';
   }
 
-  // Address autocomplete on the contact form (Places library).
-  if (maps && addressInput && maps.places?.Autocomplete) {
-    try {
-      const ac = new maps.places.Autocomplete(addressInput, {
-        fields: ['formatted_address'],
-        types: ['address'],
-        componentRestrictions: { country: ['ca'] },
-      });
-      ac.addListener('place_changed', () => {
-        const place = ac.getPlace();
-        if (place?.formatted_address) addressInput.value = place.formatted_address;
-      });
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.warn('[branch-detail] address autocomplete unavailable —', err.message);
-    }
+  // Address autocomplete via the modern PlaceAutocompleteElement web component.
+  if (maps && addressMount) {
+    await mountAddressAutocomplete(maps, { addressInput, addressMount, addressLabel });
   }
 
   block.dispatchEvent(new CustomEvent('branch-detail:ready', { detail: { branch }, bubbles: true }));

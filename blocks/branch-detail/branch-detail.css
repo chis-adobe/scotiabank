@@ -291,6 +291,22 @@
   box-shadow: 0 0 0 var(--focus-ring-width) var(--focus-ring-color);
 }
 
+/* the plain input is hidden once the Places web component mounts */
+.branch-detail .branch-detail-form-input[hidden] {
+  display: none;
+}
+
+/* Google PlaceAutocompleteElement — stretch to the field width; the widget
+   renders its own input, so just give the mount full width. */
+.branch-detail .branch-detail-pac-mount[hidden] {
+  display: none;
+}
+
+.branch-detail .branch-detail-pac {
+  display: block;
+  width: 100%;
+}
+
 /* RTE (message) */
 .branch-detail .branch-detail-rte {
   border: var(--border-width-s) solid var(--border-color);
